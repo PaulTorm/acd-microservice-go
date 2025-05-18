@@ -1,31 +1,41 @@
 services:
   student:
     image: student
-    container-name: student
+    container_name: student
     build:
-      dockerfile: services/student/Dockerfile
+      context: ./services/student
     ports:
       - "8080:8080"
+    networks:
+        - student_internal
+    depends_on:
+      - student-db
 
   student-db:
     image: postgres
+    container_name: student-db
     restart: always
     shm_size: 128mb
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+    networks:
+        - student_internal
 
   exam:
     image: exam
-    container-name: exam
+    container_name: exam
     build:
-      dockerfile: services/exam/Dockerfile
+      context: ./services/exam
     ports:
       - "8081:8080"
     networks:
       - exam_internal
+    depends_on:
+      - exam-db
 
   exam-db:
     image: postgres
+    container_name: exam-db
     restart: always
     shm_size: 128mb
     environment:
@@ -35,16 +45,19 @@ services:
 
   exam-management:
     image: exam-management
-    container-name: exam-management
+    container_name: exam-management
     build:
-      dockerfile: services/exam-management/Dockerfile
+      context: ./services/exam-management
     ports:
       - "8082:8080"
     networks:
       - exam_management_internal
+    depends_on:
+      - exam-management-db
 
   exam-management-db:
     image: postgres
+    container_name: exam-management-db
     restart: always
     shm_size: 128mb
     environment:
@@ -54,16 +67,19 @@ services:
 
   translation:
     image: translation
-    container-name: translation
+    container_name: translation
     build:
-      dockerfile: services/translation/Dockerfile
+      context: ./services/translation
     ports:
       - "8083:8080"
     networks:
       - translation_internal
+    depends_on:
+      - translation-db
 
   translation-db:
     image: postgres
+    container_name: translation-db
     restart: always
     shm_size: 128mb
     environment:
