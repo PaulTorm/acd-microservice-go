@@ -2,15 +2,20 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
+	http_handler "student/adapters/http-handler"
+	"student/core"
 	"syscall"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+
+	core := core.NewStudentService(nil)
+
+	handler := http_handler.NewHandler(core)
+	http.Handle("/", handler)
 
 	srv := &http.Server{Addr: ":8080"}
 

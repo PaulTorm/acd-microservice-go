@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,7 +9,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello, World!")
 
 	srv := &http.Server{Addr: ":8080"}
 
