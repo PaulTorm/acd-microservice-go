@@ -1,11 +1,25 @@
 package postgres_repo
 
-import "student/ports"
+import (
+	"context"
+	"log"
+	"os"
+	"student/ports"
 
-type Repo struct{}
+	"github.com/jackc/pgx/v4/pgxpool"
+)
+
+type Repo struct {
+	pool *pgxpool.Pool
+}
 
 func NewRepo() *Repo {
-	return &Repo{}
+	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+
+	return &Repo{pool: pool}
 }
 
 var _ ports.Repo = (*Repo)(nil)

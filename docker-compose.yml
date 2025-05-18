@@ -1,0 +1,79 @@
+services:
+  student:
+    image: student
+    container-name: student
+    build:
+      dockerfile: services/student/Dockerfile
+    ports:
+      - "8080:8080"
+
+  student-db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+
+  exam:
+    image: exam
+    container-name: exam
+    build:
+      dockerfile: services/exam/Dockerfile
+    ports:
+      - "8081:8080"
+    networks:
+      - exam_internal
+
+  exam-db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+    networks:
+      - exam_internal
+
+  exam-management:
+    image: exam-management
+    container-name: exam-management
+    build:
+      dockerfile: services/exam-management/Dockerfile
+    ports:
+      - "8082:8080"
+    networks:
+      - exam_management_internal
+
+  exam-management-db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+    networks:
+      - exam_management_internal
+
+  translation:
+    image: translation
+    container-name: translation
+    build:
+      dockerfile: services/translation/Dockerfile
+    ports:
+      - "8083:8080"
+    networks:
+      - translation_internal
+
+  translation-db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+    networks:
+      - translation_internal
+
+networks:
+  shared:
+  student_internal:
+  exam_internal:
+  exam_management_internal:
+  translation_internal:

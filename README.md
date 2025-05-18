@@ -19,8 +19,9 @@ The entire process is documented and compiled into a paper using [typst](https:/
 - QA (Tests, Dependency Injection)
 - Architektur (hexagonal, Ports & Adapters) Begründung warum wir es gewählt haben
 - Systemarchitektur auf einer höheren Ebene (Englische Übersetzung, vermeitdet Joins standortübergreifend)
+- Networking / NetworkPolicy (immer Service + DB in ein Subnetz und Services soweit voneinander abschotten wie möglich)
 - Eingrenzung, Scope
-- Ausblick (andere Actors und Use-Cases implementieren, z.B. Prof)
+- Ausblick (andere Actors und Use-Cases implementieren, z.B. Prof, Versionierung der REST API / deprecation cycle)
 - Security (Absichern von Endpunkten)
 - Begründen warum kein ORM
 
