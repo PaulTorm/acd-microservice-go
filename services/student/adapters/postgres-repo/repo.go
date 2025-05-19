@@ -59,12 +59,12 @@ func (r *Repo) Get(id string) (ports.Student, error) {
 	return student, nil
 }
 
-func (r *Repo) Update(student ports.Student) error {
+func (r *Repo) Update(id string, student ports.Student) error {
 	sql := `UPDATE student SET name = $1 WHERE id = $2;`
 
-	_, err := r.pool.Exec(context.Background(), sql, student.Name, student.Id)
+	_, err := r.pool.Exec(context.Background(), sql, student.Name, id)
 	if err != nil {
-		return fmt.Errorf("failed to update student %s: %v\n", student.Id, err)
+		return fmt.Errorf("failed to update student %s: %v\n", id, err)
 	}
 
 	return nil

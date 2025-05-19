@@ -30,7 +30,20 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.router.ServeHTTP(w, r)
 }
 
-func (h *Handler) createStudent(w http.ResponseWriter, r *http.Request) {}
+func (h *Handler) createStudent(w http.ResponseWriter, r *http.Request) {
+	var student ports.Student
+	if err := json.NewDecoder(r.Body).Decode(&student); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.service.CreateStudent(student); err != nil {
+		http.Error(w, err.Error(), http.StatusConflict)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
 
 func (h *Handler) getStudent(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -45,5 +58,30 @@ func (h *Handler) getStudent(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(student)
 }
 
-func (h *Handler) updateStudent(w http.ResponseWriter, r *http.Request) {}
-func (h *Handler) deleteStudent(w http.ResponseWriter, r *http.Request) {}
+func (h *Handler) updateStudent(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	var student ports.Student
+	if err := json.NewDecoder(r.Body).Decode(&student); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.service.UpdateStudent(vars["id"], student); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) deleteStudent(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	if err := h.service.DeleteStudent(vars["id"]); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
