@@ -7,9 +7,11 @@ services:
     ports:
       - "8080:8080"
     networks:
-        - student_internal
+      - student_internal
     depends_on:
       - student-db
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Please set DATABASE_URL in your local environment}
 
   student-db:
     image: postgres
@@ -19,7 +21,7 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
     networks:
-        - student_internal
+      - student_internal
 
   exam:
     image: exam
