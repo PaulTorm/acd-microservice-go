@@ -2,25 +2,33 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	http_handler "translation/adapters/http-handler"
+	postgres_repo "translation/adapters/postgres-repo"
+	"translation/core"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
 
-	srv := &http.Server{Addr: ":8080"}
+	core := core.NewTranslationService(postgres_repo.NewRepo())
+
+	handler := http_handler.NewHandler(core)
+	http.Handle("/", handler)
+
+	server := &http.Server{Addr: ":8080"}
 
 	go func() {
 		sigChan := make(chan os.Signal, 1)
 		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 		<-sigChan
-		srv.Shutdown(context.Background())
+		server.Shutdown(context.Background())
 	}()
 
-	srv.ListenAndServe()
+	log.Println("translation service is listening...")
+	server.ListenAndServe()
 }
