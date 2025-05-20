@@ -55,7 +55,7 @@
 
   if abstract != none [
     #set text(9pt, weight: 700, spacing: 150%)
-    #h(1em) _Zusammenfassung_---#h(weak: true, 0pt)#abstract
+    _Abstract_---#h(weak: true, 0pt)#abstract
   ]
 
   body
