@@ -11,7 +11,7 @@ services:
     depends_on:
       - student-db
     environment:
-      DATABASE_URL: ${DATABASE_URL:?Please set DATABASE_URL in your local environment}
+      DB_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
 
   student-db:
     image: postgres
@@ -19,7 +19,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
     networks:
       - student_internal
 
@@ -34,6 +34,8 @@ services:
       - exam_internal
     depends_on:
       - exam-db
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
 
   exam-db:
     image: postgres
@@ -41,7 +43,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
     networks:
       - exam_internal
 
@@ -56,6 +58,8 @@ services:
       - exam_management_internal
     depends_on:
       - exam-management-db
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
 
   exam-management-db:
     image: postgres
@@ -63,7 +67,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
     networks:
       - exam_management_internal
 
@@ -78,6 +82,8 @@ services:
       - translation_internal
     depends_on:
       - translation-db
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
 
   translation-db:
     image: postgres
@@ -85,7 +91,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in your local environment}
     networks:
       - translation_internal
 

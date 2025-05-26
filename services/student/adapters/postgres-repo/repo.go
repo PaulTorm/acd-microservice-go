@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"student/ports"
+	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -15,20 +16,27 @@ type Repo struct {
 }
 
 func NewRepo() *Repo {
-	ctx := context.Background()
-	pool, err := pgxpool.Connect(ctx, os.Getenv("DATABASE_URL"))
-	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+	password, ok := os.LookupEnv("DB_PASSWORD")
+	if !ok {
+		log.Fatalf("DB_PASSWORD is not set")
 	}
 
-	sql := `CREATE TABLE IF NOT EXISTS student (
-		id TEXT PRIMARY KEY NOT NULL,
-		name TEXT NOT NULL
+	url := fmt.Sprintf("postgres://postgres:%s@student-db:5432/postgres?sslmode=disable", password)
+
+	ctx := context.Background()
+	pool, err := tryConnectExponentialBackoff(ctx, url)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+
+	sql := `CREATE TABLE IF NOT EXISTS students (
+		id VARCHAR PRIMARY KEY NOT NULL,
+		name VARCHAR NOT NULL
 	);`
 
 	_, err = pool.Exec(ctx, sql)
 	if err != nil {
-		log.Fatalf("failed to create student table")
+		log.Fatalf("failed to create students table")
 	}
 
 	return &Repo{pool: pool}
@@ -79,4 +87,24 @@ func (r *Repo) Delete(id string) error {
 	}
 
 	return nil
+}
+
+func tryConnectExponentialBackoff(ctx context.Context, url string) (*pgxpool.Pool, error) {
+	var pool *pgxpool.Pool
+	var err error
+
+	maxRetries := 5
+	delay := 2 * time.Second
+
+	for i := 1; i <= maxRetries; i++ {
+		if pool, err = pgxpool.Connect(ctx, url); err == nil {
+			return pool, nil
+		}
+
+		log.Printf("retry %d failed to connect to database: %v", i, err)
+		time.Sleep(delay)
+		delay *= 2
+	}
+
+	return nil, fmt.Errorf("failed to connect to database after %d retries: %w", maxRetries, err)
 }
