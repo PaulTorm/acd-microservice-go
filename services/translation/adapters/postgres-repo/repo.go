@@ -79,7 +79,7 @@ func (r *Repo) Update(id string, translation ports.Translation) error {
 }
 
 func (r *Repo) Delete(id string) error {
-	sql := `DELETE translations WHERE id = $1;`
+	sql := `DELETE FROM translations WHERE id = $1;`
 
 	_, err := r.pool.Exec(context.Background(), sql, id)
 	if err != nil {

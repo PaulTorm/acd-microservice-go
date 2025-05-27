@@ -18,7 +18,7 @@ type Translation struct {
 	EnglishDescription string `json:"englishDescription"`
 }
 
-type CreateExamRequest struct {
+type ExamWithTranslation struct {
 	Id                 string `json:"id"`
 	Name               string `json:"name"`
 	Description        string `json:"description"`

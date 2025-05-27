@@ -47,7 +47,7 @@ func NewRepo() *Repo {
 var _ ports.Repo = (*Repo)(nil)
 
 func (r *Repo) Create(exam ports.Exam) error {
-	sql := `INSERT INTO exam ("id", "name", "description", "credits") VALUES ($1, $2, $3, $4);`
+	sql := `INSERT INTO exams ("id", "name", "description", "credits") VALUES ($1, $2, $3, $4);`
 
 	_, err := r.pool.Exec(context.Background(), sql, exam.Id, exam.Name, exam.Description, exam.Credits)
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *Repo) Create(exam ports.Exam) error {
 }
 
 func (r *Repo) Get(id string) (ports.Exam, error) {
-	sql := `SELECT * FROM exam WHERE id = $1;`
+	sql := `SELECT * FROM exams WHERE id = $1;`
 
 	var exam ports.Exam
 	err := r.pool.QueryRow(context.Background(), sql, id).Scan(&exam.Id, &exam.Name, &exam.Description, &exam.Credits)
@@ -70,7 +70,7 @@ func (r *Repo) Get(id string) (ports.Exam, error) {
 }
 
 func (r *Repo) Update(id string, exam ports.Exam) error {
-	sql := `UPDATE exam SET name = $2, description = $3, credits = $4 WHERE id = $1;`
+	sql := `UPDATE exams SET name = $2, description = $3, credits = $4 WHERE id = $1;`
 
 	_, err := r.pool.Exec(context.Background(), sql, id, exam.Name, exam.Description, exam.Credits)
 	if err != nil {
@@ -81,7 +81,7 @@ func (r *Repo) Update(id string, exam ports.Exam) error {
 }
 
 func (r *Repo) Delete(id string) error {
-	sql := `DELETE exam WHERE id = $1;`
+	sql := `DELETE FROM exams WHERE id = $1;`
 
 	_, err := r.pool.Exec(context.Background(), sql, id)
 	if err != nil {

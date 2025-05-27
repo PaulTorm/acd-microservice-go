@@ -30,9 +30,9 @@ func NewRepo() *Repo {
 	}
 
 	sql := `CREATE TABLE IF NOT EXISTS exam_registrations (
-		studentId VARCHAR NOT NULL,
-		examId VARCHAR NOT NULL,
-		grade FLOAT NOT NULL,
+		student_id VARCHAR NOT NULL,
+		exam_id VARCHAR NOT NULL,
+		grade FLOAT,
 		PRIMARY KEY (studentId, examId)
 	);`
 
@@ -47,7 +47,7 @@ func NewRepo() *Repo {
 var _ ports.Repo = (*Repo)(nil)
 
 func (r *Repo) Create(examRegistration ports.ExamRegistration) error {
-	sql := `INSERT INTO exam_registrations ("studentId", "examId", "grade") VALUES ($1, $2, $3);`
+	sql := `INSERT INTO exam_registrations ("student_id", "exam_id", "grade") VALUES ($1, $2, $3);`
 
 	_, err := r.pool.Exec(context.Background(), sql,
 		examRegistration.StudentId,
@@ -61,41 +61,45 @@ func (r *Repo) Create(examRegistration ports.ExamRegistration) error {
 	return nil
 }
 
-func (r *Repo) Get(id string) (ports.xam_managementManagement, error) {
-	sql := `SELECT * FROM exam_registrations WHERE id = $1;`
+func (r *Repo) Get(studentId string) ([]ports.ExamRegistration, error) {
+	sql := `SELECT * FROM exam_registrations WHERE student_id = $1;`
 
-	var examRegistrations ports.ExamRegistration
-	err := r.pool.QueryRow(context.Background(), sql, id).Scan(
-		&exam_management.Id, 
-		&exam_management.Name, 
-		&exam_management.Description, 
-		&exam_management.Credits
-	)
+	var examRegistrations []ports.ExamRegistration
 
+	rows, err := r.pool.Query(context.Background(), sql, studentId)
 	if err != nil {
-		return exam_management, fmt.Errorf("failed to query exam_management %s: %v\n", id, err)
+		return nil, fmt.Errorf("failed to query exam_registrations for student %s: %v", studentId, err)
 	}
 
-	return exam_management, nil
+	for rows.Next() {
+		var examRegistration ports.ExamRegistration
+		if err := rows.Scan(&examRegistration.StudentId, &examRegistration.ExamId, &examRegistration.Grade); err != nil {
+			return nil, err
+		}
+
+		examRegistrations = append(examRegistrations, examRegistration)
+	}
+
+	return examRegistrations, nil
 }
 
-func (r *Repo) Update(id string, exam_management ports.exam_managementManagement) error {
-	sql := `UPDATE exam_management SET name = $2, description = $3, credits = $4 WHERE id = $1;`
+func (r *Repo) Update(studentId string, examId string, examRegistration ports.ExamRegistration) error {
+	sql := `UPDATE exam_registrations SET grade = $3 WHERE student_id = $1 AND exam_id = $2;`
 
-	_, err := r.pool.Exec(context.Background(), sql, id, exam_management.Name, exam_management.Description, exam_management.Credits)
+	_, err := r.pool.Exec(context.Background(), sql, studentId, examId, examRegistration.Grade)
 	if err != nil {
-		return fmt.Errorf("failed to update exam_management %s: %v\n", id, err)
+		return fmt.Errorf("failed to update exam_registration for student %s: %v", studentId, err)
 	}
 
 	return nil
 }
 
-func (r *Repo) Delete(id string) error {
-	sql := `DELETE exam_management WHERE id = $1;`
+func (r *Repo) Delete(studentId string) error {
+	sql := `DELETE FROM exam_registrations WHERE id = $1;`
 
-	_, err := r.pool.Exec(context.Background(), sql, id)
+	_, err := r.pool.Exec(context.Background(), sql, studentId)
 	if err != nil {
-		return fmt.Errorf("failed to delete exam_management %s: %v", id, err)
+		return fmt.Errorf("failed to delete exam_registration for student %s: %v", studentId, err)
 	}
 
 	return nil

@@ -2,6 +2,10 @@ package main
 
 import (
 	"context"
+	http_handler "exam-management/adapters/http-handler"
+	postgres_repo "exam-management/adapters/postgres-repo"
+	"exam-management/core"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -9,6 +13,11 @@ import (
 )
 
 func main() {
+
+	core := core.NewExamManagementService(postgres_repo.NewRepo())
+
+	handler := http_handler.NewHandler(core)
+	http.Handle("/", handler)
 
 	server := &http.Server{Addr: ":8080"}
 
@@ -20,5 +29,6 @@ func main() {
 		server.Shutdown(context.Background())
 	}()
 
+	log.Println("exam service is listening...")
 	server.ListenAndServe()
 }

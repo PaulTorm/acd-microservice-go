@@ -45,41 +45,41 @@ func NewRepo() *Repo {
 var _ ports.Repo = (*Repo)(nil)
 
 func (r *Repo) Create(student ports.Student) error {
-	sql := `INSERT INTO student ("id", "name") VALUES ($1, $2);`
+	sql := `INSERT INTO students ("id", "name") VALUES ($1, $2);`
 
 	_, err := r.pool.Exec(context.Background(), sql, student.Id, student.Name)
 	if err != nil {
-		return fmt.Errorf("failed to insert student: %v\n", err)
+		return fmt.Errorf("failed to insert student: %v", err)
 	}
 
 	return nil
 }
 
 func (r *Repo) Get(id string) (ports.Student, error) {
-	sql := `SELECT * FROM student WHERE id = $1;`
+	sql := `SELECT * FROM students WHERE id = $1;`
 
 	var student ports.Student
 	err := r.pool.QueryRow(context.Background(), sql, id).Scan(&student.Id, &student.Name)
 	if err != nil {
-		return student, fmt.Errorf("failed to query student %s: %v\n", student.Id, err)
+		return student, fmt.Errorf("failed to query student %s: %v", id, err)
 	}
 
 	return student, nil
 }
 
 func (r *Repo) Update(id string, student ports.Student) error {
-	sql := `UPDATE student SET name = $1 WHERE id = $2;`
+	sql := `UPDATE students SET name = $1 WHERE id = $2;`
 
 	_, err := r.pool.Exec(context.Background(), sql, student.Name, id)
 	if err != nil {
-		return fmt.Errorf("failed to update student %s: %v\n", id, err)
+		return fmt.Errorf("failed to update student%s: %v", id, err)
 	}
 
 	return nil
 }
 
 func (r *Repo) Delete(id string) error {
-	sql := `DELETE student WHERE id = $1;`
+	sql := `DELETE FROM students WHERE id = $1;`
 
 	_, err := r.pool.Exec(context.Background(), sql, id)
 	if err != nil {
