@@ -17,6 +17,7 @@
   abstract: [
     TODO
   ],
+  bibliography: bibliography("refs.bib"),
 )
 
 = Einleitung
@@ -67,23 +68,23 @@ eigene HTTP-Schnittstelle an.
 
 == Hexagonales Microservice Design
 
-= Grundlagen
-
+= Implementierung
 == Die Programmiersprache Go
-
-== Goroutinen
+== Goroutines
 
 = Deployment
-
 == Docker
-
 == Kubernetes
 
+== Probleme des Systems
+Ein gravierender Designfehler im Aufbau des Systems besteht in der Trennung der englischen Übersetzung
+vom Rest der Prüfungsentität. Zwar erfolgt der JOIN nicht mehr auf Datenbankebene, sondern wird im Microservice durch
+mehrere getrennte Requests realisiert. Ist jedoch entweder der Translation Service oder der Exam Service bei der Erstellung
+einer Prüfung nicht verfügbar, kann dies zu einem inkonsistenten Zustand führen. Dieses Problem erfordert den Einsatz
+verteilter Transaktionen und die Implementierung eines Two-Phase Commit @two-phase-commit.
+
 = Ausblick
-
 == Secrutiy
-
 == Monitoring
-
 == Distributed Tracing
 

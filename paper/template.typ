@@ -51,6 +51,11 @@
     }
   )
 
+  // Style bibliography.
+  show std.bibliography: set text(8pt)
+  show std.bibliography: set block(spacing: 0.5em)
+  set std.bibliography(title: text(10pt)[Literaturverzeichnis], style: "ieee")
+
   outline()
 
   if abstract != none [
@@ -59,5 +64,6 @@
   ]
 
   body
+  bibliography
 }
 
