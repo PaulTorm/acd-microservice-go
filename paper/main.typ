@@ -14,13 +14,15 @@
       email: "paul.tormaehlen@stud.hs-mannheim.de"
     )
   ),
-  abstract: lorem(50)
+  abstract: [
+    TODO
+  ],
 )
 
 = Einleitung
 
 == Motivation
-An der Hochschule Mannheim existiert ein zentrales System zur Prüfungsorganisation, das sämtliche prüfungsrelevanten Abläufe verwaltet.
+An der Hochschule Mannheim existiert ein zentrales System zur Prüfungsorganisation (POS), das sämtliche prüfungsrelevanten Abläufe verwaltet.
 Für jede Prüfung ist sowohl eine deutsche als auch eine englische Beschreibung erforderlich. Während die deutschen Beschreibungen in der
 lokalen Datenbank der Hochschule Mannheim gespeichert sind, befinden sich die englischen Übersetzungen in einer externen Datenbank an
 der Hochschule Reutlingen. Dadurch entstehen standortübergreifende JOIN-Operationen, die die Performance des Gesamtsystems spürbar beeinträchtigen.
@@ -30,42 +32,43 @@ Anstelle das Datenbankmanagementsystem für standortübergreifende JOIN-Operatio
 und komponiert, dass ein solcher JOIN nicht mehr notwendig ist.
 
 == Akteure und Anwendungsfälle
-#lorem(50)
+Um den Umfang des Projekts einzugrenzen, wurde in diesem Paper prototypisch lediglich ein ausgewählter Teilbereich des
+Prüfungsorganisationssystems (POS) implementiert. Im Fokus stehen dabei die Studierenden mit den zentralen Anwendungsfällen
+der Anmeldung und Abmeldung zu Prüfungen sowie der Einsicht einer Übersicht aller angemeldeten Prüfungen. Zusätzlich wurden
+Funktionalitäten zum Anlegen, Bearbeiten, Einsehen und Löschen von Prüfungen umgesetzt. Für diese administrativen Operationen
+ist zwar kein expliziter Akteur definiert, sie sind jedoch notwendig, um die genannten Anwendungsfälle der Studierenden
+sinnvoll abbilden zu können.
+
+#figure(
+  image("diagrams/use_cases.svg", width: 50%),
+  caption: [
+    Use-Case Diagramm der Prüfungsverwaltung
+  ],
+)
 
 = Architektur
 
 == Systemüberblick
-#lorem(50)
 
 == Hexagonales Microservice Design
-#lorem(50)
 
 = Grundlagen
-#lorem(50)
 
 == Die Programmiersprache Go
-#lorem(50)
 
 == Goroutinen
-#lorem(50)
 
 = Deployment
-#lorem(50)
 
 == Docker
-#lorem(50)
 
 == Kubernetes
-#lorem(50)
 
 = Ausblick
-#lorem(30)
 
 == Secrutiy
-#lorem(50)
 
 == Monitoring
-#lorem(50)
 
 == Distributed Tracing
-#lorem(50)
+
