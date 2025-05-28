@@ -73,13 +73,33 @@ eigene HTTP-Schnittstelle an.
 == Goroutines
 
 = Deployment
+
 == Docker
+Das Bauen der Docker Images erfolgt in zwei Stages. Die erste Stage enthält den Go Compiler
+und kompiliert den Code zu einer statisch verlinkten ausführbaren Datei, abhängig von der konfigurierten Plattform.
+Da die Docker Container unter Linux laufen, ist die Zielplattform Linux. In der zweiten Stage wird die kompilierte
+Binary in einen Scratch Container kopiert, der nichts außer dieser ausführbaren Datei enthält. Dadurch entsteht
+ein sehr schlankes Docker Image, wie @image-size zeigt. Ein Nachteil eines Scratch Containers ist,
+dass dieser tatsächlich keinerlei zusätzliche Komponenten enthält – nicht einmal eine Shell.
+Daher ist es zur Laufzeit unmöglich, sich mit dem Container zu verbinden, was das Debugging potenziell erschwert.
+
+#figure(
+  table(
+    columns: 6,
+    rows: 2,
+    align: center,
+    [Image Name], [Gateway], [Exam Management], [Translation], [Exam], [Student],
+    [Image Size], [8.82 MB], [12.3 MB], [11.6 MB], [11.6 MB], [11.6 MB],
+  ),
+  caption: [Größe der Docker Images],
+) <image-size>
+
 == Kubernetes
 
-== Probleme des Systems
+= Probleme des Systems
 Ein gravierender Designfehler im Aufbau des Systems besteht in der Trennung der englischen Übersetzung
 vom Rest der Prüfungsentität. Zwar erfolgt der JOIN nicht mehr auf Datenbankebene, sondern wird im Microservice durch
-mehrere getrennte Requests realisiert. Ist jedoch entweder der Translation Service oder der Exam Service bei der Erstellung
+mehrere getrennte Anfragen realisiert. Ist jedoch entweder der Translation Service oder der Exam Service bei der Erstellung
 einer Prüfung nicht verfügbar, kann dies zu einem inkonsistenten Zustand führen. Dieses Problem erfordert den Einsatz
 verteilter Transaktionen und die Implementierung eines Two-Phase Commit @two-phase-commit.
 
