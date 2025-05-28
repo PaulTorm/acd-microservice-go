@@ -33,12 +33,12 @@ func NewRepo() *Repo {
 		student_id VARCHAR NOT NULL,
 		exam_id VARCHAR NOT NULL,
 		grade FLOAT,
-		PRIMARY KEY (studentId, examId)
+		PRIMARY KEY (student_id, exam_id)
 	);`
 
 	_, err = pool.Exec(ctx, sql)
 	if err != nil {
-		log.Fatalf("failed to create exam_registrations table")
+		log.Fatalf("failed to create exam_registrations table: %v", err)
 	}
 
 	return &Repo{pool: pool}
@@ -55,7 +55,7 @@ func (r *Repo) Create(examRegistration ports.ExamRegistration) error {
 		examRegistration.Grade)
 
 	if err != nil {
-		return fmt.Errorf("failed to insert exam_registrations: %v\n", err)
+		return fmt.Errorf("failed to insert exam_registrations: %v", err)
 	}
 
 	return nil
@@ -94,10 +94,10 @@ func (r *Repo) Update(studentId string, examId string, examRegistration ports.Ex
 	return nil
 }
 
-func (r *Repo) Delete(studentId string) error {
-	sql := `DELETE FROM exam_registrations WHERE id = $1;`
+func (r *Repo) Delete(studentId string, examId string) error {
+	sql := `DELETE FROM exam_registrations WHERE student_id = $1 AND exam_id = $2;`
 
-	_, err := r.pool.Exec(context.Background(), sql, studentId)
+	_, err := r.pool.Exec(context.Background(), sql, studentId, examId)
 	if err != nil {
 		return fmt.Errorf("failed to delete exam_registration for student %s: %v", studentId, err)
 	}

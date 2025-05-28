@@ -51,7 +51,7 @@ func (r *Repo) Create(exam ports.Exam) error {
 
 	_, err := r.pool.Exec(context.Background(), sql, exam.Id, exam.Name, exam.Description, exam.Credits)
 	if err != nil {
-		return fmt.Errorf("failed to insert exam: %v\n", err)
+		return fmt.Errorf("failed to insert exam: %v", err)
 	}
 
 	return nil
@@ -63,10 +63,32 @@ func (r *Repo) Get(id string) (ports.Exam, error) {
 	var exam ports.Exam
 	err := r.pool.QueryRow(context.Background(), sql, id).Scan(&exam.Id, &exam.Name, &exam.Description, &exam.Credits)
 	if err != nil {
-		return exam, fmt.Errorf("failed to query exam %s: %v\n", exam.Id, err)
+		return exam, fmt.Errorf("failed to query exam %s: %v", exam.Id, err)
 	}
 
 	return exam, nil
+}
+
+func (r *Repo) GetAll() ([]ports.Exam, error) {
+	sql := `SELECT * FROM exams;`
+
+	exams := []ports.Exam{}
+
+	rows, err := r.pool.Query(context.Background(), sql)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query exams: %v", err)
+	}
+
+	for rows.Next() {
+		var exam ports.Exam
+		if err := rows.Scan(&exam.Id, &exam.Name, &exam.Description, &exam.Credits); err != nil {
+			return nil, err
+		}
+
+		exams = append(exams, exam)
+	}
+
+	return exams, nil
 }
 
 func (r *Repo) Update(id string, exam ports.Exam) error {
@@ -74,7 +96,7 @@ func (r *Repo) Update(id string, exam ports.Exam) error {
 
 	_, err := r.pool.Exec(context.Background(), sql, id, exam.Name, exam.Description, exam.Credits)
 	if err != nil {
-		return fmt.Errorf("failed to update exam %s: %v\n", id, err)
+		return fmt.Errorf("failed to update exam %s: %v", id, err)
 	}
 
 	return nil

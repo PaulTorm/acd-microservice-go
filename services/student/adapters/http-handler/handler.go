@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"student/ports"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
@@ -17,6 +18,7 @@ func NewHandler(service ports.Api) *Handler {
 
 	h := Handler{service: service, router: *mux.NewRouter()}
 	h.router.HandleFunc("/students", h.createStudent).Methods(http.MethodPost)
+	h.router.HandleFunc("/students", h.getStudents).Methods(http.MethodGet)
 	h.router.HandleFunc("/students/{id}", h.getStudent).Methods(http.MethodGet)
 	h.router.HandleFunc("/students/{id}", h.updateStudent).Methods(http.MethodPatch)
 	h.router.HandleFunc("/students/{id}", h.deleteStudent).Methods(http.MethodDelete)
@@ -37,12 +39,28 @@ func (h *Handler) createStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	student.Id = uuid.New().String()
+
 	if err := h.service.CreateStudent(student); err != nil {
-		http.Error(w, err.Error(), http.StatusConflict)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(student)
+}
+
+func (h *Handler) getStudents(w http.ResponseWriter, r *http.Request) {
+	students, err := h.service.GetStudents()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(students)
 }
 
 func (h *Handler) getStudent(w http.ResponseWriter, r *http.Request) {

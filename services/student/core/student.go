@@ -34,9 +34,13 @@ func (s *StudentService) GetStudent(id string) (ports.Student, error) {
 	return student, nil
 }
 
+func (s *StudentService) GetStudents() ([]ports.Student, error) {
+	return s.repo.GetAll()
+}
+
 func (s *StudentService) UpdateStudent(id string, student ports.Student) error {
 	if err := s.repo.Update(id, student); err != nil {
-		log.Printf("failted to update student %s: %v\n", student.Id, err)
+		log.Printf("failted to update student %s: %v", id, err)
 		return err
 	}
 
@@ -45,7 +49,7 @@ func (s *StudentService) UpdateStudent(id string, student ports.Student) error {
 
 func (s *StudentService) DeleteStudent(id string) error {
 	if err := s.repo.Delete(id); err != nil {
-		log.Printf("failted to delete student %s: %v\n", id, err)
+		log.Printf("failed to delete student %s: %v\n", id, err)
 		return err
 	}
 

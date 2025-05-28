@@ -1,12 +1,21 @@
 services:
+  gateway:
+    image: gateway
+    container_name: gateway
+    build:
+      context: ./services/gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - shared
+
   student:
     image: student
     container_name: student
     build:
       context: ./services/student
-    ports:
-      - "8080:8080"
     networks:
+      - shared
       - student_internal
     depends_on:
       - student-db
@@ -28,9 +37,8 @@ services:
     container_name: exam
     build:
       context: ./services/exam
-    ports:
-      - "8081:8080"
     networks:
+      - shared
       - exam_internal
     depends_on:
       - exam-db
@@ -52,9 +60,8 @@ services:
     container_name: exam-management
     build:
       context: ./services/exam-management
-    ports:
-      - "8082:8080"
     networks:
+      - shared
       - exam_management_internal
     depends_on:
       - exam-management-db
@@ -76,9 +83,8 @@ services:
     container_name: translation
     build:
       context: ./services/translation
-    ports:
-      - "8083:8080"
     networks:
+      - shared
       - translation_internal
     depends_on:
       - translation-db

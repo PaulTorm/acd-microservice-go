@@ -31,7 +31,7 @@ func NewRepo() *Repo {
 
 	sql := `CREATE TABLE IF NOT EXISTS translations (
 		id VARCHAR PRIMARY KEY NOT NULL,
-		englishDescription TEXT NOT NULL
+		english_description VARCHAR NOT NULL
 	);`
 
 	_, err = pool.Exec(ctx, sql)
@@ -45,7 +45,7 @@ func NewRepo() *Repo {
 var _ ports.Repo = (*Repo)(nil)
 
 func (r *Repo) Create(translation ports.Translation) error {
-	sql := `INSERT INTO translations ("id", "englishDescription") VALUES ($1, $2);`
+	sql := `INSERT INTO translations ("id", "english_description") VALUES ($1, $2);`
 
 	_, err := r.pool.Exec(context.Background(), sql, translation.Id, translation.EnglishDescription)
 	if err != nil {
@@ -68,7 +68,7 @@ func (r *Repo) Get(id string) (ports.Translation, error) {
 }
 
 func (r *Repo) Update(id string, translation ports.Translation) error {
-	sql := `UPDATE translations SET name = $2, englishDescription = $3 WHERE id = $1;`
+	sql := `UPDATE translations SET english_description = $2 WHERE id = $1;`
 
 	_, err := r.pool.Exec(context.Background(), sql, id, translation.EnglishDescription)
 	if err != nil {

@@ -67,10 +67,32 @@ func (r *Repo) Get(id string) (ports.Student, error) {
 	return student, nil
 }
 
-func (r *Repo) Update(id string, student ports.Student) error {
-	sql := `UPDATE students SET name = $1 WHERE id = $2;`
+func (r *Repo) GetAll() ([]ports.Student, error) {
+	sql := `SELECT * FROM students;`
 
-	_, err := r.pool.Exec(context.Background(), sql, student.Name, id)
+	students := []ports.Student{}
+
+	rows, err := r.pool.Query(context.Background(), sql)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query students: %v", err)
+	}
+
+	for rows.Next() {
+		var student ports.Student
+		if err := rows.Scan(&student.Id, &student.Name); err != nil {
+			return nil, err
+		}
+
+		students = append(students, student)
+	}
+
+	return students, nil
+}
+
+func (r *Repo) Update(id string, student ports.Student) error {
+	sql := `UPDATE students SET name = $2 WHERE id = $1;`
+
+	_, err := r.pool.Exec(context.Background(), sql, id, student.Name)
 	if err != nil {
 		return fmt.Errorf("failed to update student%s: %v", id, err)
 	}

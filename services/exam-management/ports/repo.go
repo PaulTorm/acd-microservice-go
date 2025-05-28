@@ -1,8 +1,8 @@
 package ports
 
 type Repo interface {
-	Create(ExamRegistration) error
-	Get(string) ([]ExamRegistration, error)
-	Update(string, string, ExamRegistration) error
-	Delete(string) error
+	Create(examRegistration ExamRegistration) error
+	Get(studentId string) ([]ExamRegistration, error)
+	Update(studentId string, examId string, examRegistration ExamRegistration) error
+	Delete(studentId string, examId string) error
 }

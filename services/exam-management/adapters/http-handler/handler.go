@@ -16,10 +16,16 @@ type Handler struct {
 func NewHandler(service ports.Api) *Handler {
 
 	h := Handler{service: service, router: *mux.NewRouter()}
+
 	h.router.HandleFunc("/exams", h.createExam).Methods(http.MethodPost)
 	h.router.HandleFunc("/exams/{id}", h.getExam).Methods(http.MethodGet)
 	h.router.HandleFunc("/exams/{id}", h.updateExam).Methods(http.MethodPatch)
 	h.router.HandleFunc("/exams/{id}", h.deleteExam).Methods(http.MethodDelete)
+
+	h.router.HandleFunc("/registrations/{id}", h.getRegistrations).Methods(http.MethodGet)
+	h.router.HandleFunc("/register", h.register).Methods(http.MethodPost)
+	h.router.HandleFunc("/unregister", h.unregister).Methods(http.MethodDelete)
+	h.router.HandleFunc("/grade", h.grade).Methods(http.MethodPatch)
 
 	return &h
 }
@@ -38,16 +44,18 @@ func (h *Handler) createExam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	exam := ports.Exam{
-		Id:          request.Id,
 		Name:        request.Name,
 		Description: request.Description,
 		Credits:     request.Credits,
 	}
 
-	if err := h.service.CreateExam(exam); err != nil {
+	response, err := h.service.CreateExam(exam)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	request.Id = response.Id
 
 	translation := ports.Translation{
 		Id:                 request.Id,
@@ -60,6 +68,9 @@ func (h *Handler) createExam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(request)
 }
 
 func (h *Handler) getExam(w http.ResponseWriter, r *http.Request) {
@@ -132,6 +143,64 @@ func (h *Handler) deleteExam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.service.DeleteTranslation(vars["id"]); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) getRegistrations(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	registrations, err := h.service.GetRegistrations(vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(registrations)
+}
+
+func (h *Handler) register(w http.ResponseWriter, r *http.Request) {
+	var request ports.ExamRegistration
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.service.Register(request.StudentId, request.ExamId); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) unregister(w http.ResponseWriter, r *http.Request) {
+	var request ports.ExamRegistration
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.service.Unregister(request.StudentId, request.ExamId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) grade(w http.ResponseWriter, r *http.Request) {
+	var request ports.ExamRegistration
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.service.Grade(request.StudentId, request.ExamId, request.Grade); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
