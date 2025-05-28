@@ -64,7 +64,7 @@ func (r *Repo) Create(examRegistration ports.ExamRegistration) error {
 func (r *Repo) Get(studentId string) ([]ports.ExamRegistration, error) {
 	sql := `SELECT * FROM exam_registrations WHERE student_id = $1;`
 
-	var examRegistrations []ports.ExamRegistration
+	examRegistrations := []ports.ExamRegistration{}
 
 	rows, err := r.pool.Query(context.Background(), sql, studentId)
 	if err != nil {

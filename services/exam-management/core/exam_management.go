@@ -27,6 +27,10 @@ func (s *ExamManagementService) CreateTranslation(translation ports.Translation)
 	return s.client.CreateTranslation(translation)
 }
 
+func (s *ExamManagementService) GetExams() ([]ports.Exam, error) {
+	return s.client.GetExams()
+}
+
 func (s *ExamManagementService) GetExam(id string) (ports.Exam, error) {
 	return s.client.GetExam(id)
 }

@@ -18,6 +18,7 @@ func NewHandler(service ports.Api) *Handler {
 	h := Handler{service: service, router: *mux.NewRouter()}
 
 	h.router.HandleFunc("/exams", h.createExam).Methods(http.MethodPost)
+	h.router.HandleFunc("/exams", h.getExams).Methods(http.MethodGet)
 	h.router.HandleFunc("/exams/{id}", h.getExam).Methods(http.MethodGet)
 	h.router.HandleFunc("/exams/{id}", h.updateExam).Methods(http.MethodPatch)
 	h.router.HandleFunc("/exams/{id}", h.deleteExam).Methods(http.MethodDelete)
@@ -71,6 +72,17 @@ func (h *Handler) createExam(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(request)
+}
+
+func (h *Handler) getExams(w http.ResponseWriter, r *http.Request) {
+	exams, err := h.service.GetExams()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(exams)
 }
 
 func (h *Handler) getExam(w http.ResponseWriter, r *http.Request) {
@@ -175,7 +187,7 @@ func (h *Handler) register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h *Handler) unregister(w http.ResponseWriter, r *http.Request) {
