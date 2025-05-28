@@ -20,7 +20,14 @@
 = Einleitung
 
 == Motivation
-#lorem(50)
+An der Hochschule Mannheim existiert ein zentrales System zur Prüfungsorganisation, das sämtliche prüfungsrelevanten Abläufe verwaltet.
+Für jede Prüfung ist sowohl eine deutsche als auch eine englische Beschreibung erforderlich. Während die deutschen Beschreibungen in der
+lokalen Datenbank der Hochschule Mannheim gespeichert sind, befinden sich die englischen Übersetzungen in einer externen Datenbank an
+der Hochschule Reutlingen. Dadurch entstehen standortübergreifende JOIN-Operationen, die die Performance des Gesamtsystems spürbar beeinträchtigen.
+Inspiriert von diesem Missstand untersucht dieses Paper eine mögliche Microservice-basierte Lösung für das beschriebene Problem.
+Dabei werden die Prüfungsdetails und die englischen Übersetzungen in getrennten Datenbanken gespeichert.
+Anstelle das Datenbankmanagementsystem für standortübergreifende JOIN-Operationen zu verwenden, werden Microservices so gestaltet
+und komponiert, dass ein solcher JOIN nicht mehr notwendig ist.
 
 == Akteure und Anwendungsfälle
 #lorem(50)
