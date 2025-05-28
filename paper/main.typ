@@ -42,13 +42,28 @@ sinnvoll abbilden zu können.
 #figure(
   image("diagrams/use_cases.svg", width: 50%),
   caption: [
-    Use-Case Diagramm der Prüfungsverwaltung
+    Use-Case Diagramm der Prüfungsverwaltung für Studierende
   ],
 )
 
-= Architektur
+== Zielsetzung
+Der Schwerpunkt dieser Arbeit liegt auf der Auseinandersetzung mit den eingesetzten Technologien zur Implementierung.
+Das dargestellte Anwendungsszenario erhebt dabei keinen Anspruch auf Vollständigkeit, und der entwickelte Prototyp ist nicht für den produktiven Einsatz vorgesehen.
+Fehlende Aspekte, die in einer produktiven Umgebung zwingend erforderlich wären, werden in einem späteren Kapitel näher erläutert.
 
+= Architektur
 == Systemüberblick
+Das Gesamtsystem besteht aus insgesamt fünf Microservices, dargestellt in @components. Jede Anfrage kommt zentral
+über das Gateway in das System. Es fungiert als Reverse Proxy, der zum Beispiel Anfragen von nicht vertrauenswürdigen
+IP-Adressen verwerfen kann. Jeder Microservice ist implementiert als RESTful Web Service und bietet jeweils seine
+eigene HTTP-Schnittstelle an.
+
+#figure(
+  image("diagrams/components.svg", width: 50%),
+  caption: [
+    Komponentenansicht des Gesamtsystems
+  ],
+) <components>
 
 == Hexagonales Microservice Design
 
