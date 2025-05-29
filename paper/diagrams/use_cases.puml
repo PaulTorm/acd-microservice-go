@@ -2,10 +2,10 @@
 left to right direction
 actor Student as s
 
-package Prüfungsverwaltung {
-  usecase "Prüfung abmelden" as UC1
-  usecase "Prüfung anmelden" as UC2
-  usecase "Angemeldete Prüfungen einsehen" as UC3
+package "Exam Management" {
+  usecase "Unregister for an exam" as UC1
+  usecase "Register for an exam" as UC2
+  usecase "View all registered exams" as UC3
 }
 
 s --> UC1

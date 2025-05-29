@@ -1,0 +1,18 @@
+@startuml
+title Register for an exam
+
+actor Student as s
+participant Gateway as gateway
+participant "Exam Management" as management
+participant Exam as exam
+participant Student as student
+
+s --> gateway : Register
+gateway --> management : CreateRegistration(examId, studentId)
+management --> exam : GetExam(examId)
+exam --> management : 200 OK
+management --> student : GetStudent(studentId)
+student --> management : 200 OK
+management --> gateway : 201 CREATED
+gateway --> s : 201 CREATED
+@enduml

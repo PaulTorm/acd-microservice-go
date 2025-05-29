@@ -45,7 +45,20 @@ sinnvoll abbilden zu können.
   caption: [
     Use-Case Diagramm der Prüfungsverwaltung für Studierende
   ],
-)
+) <use-cases>
+
+@register-for-exam zeigt den Ablauf einer erfolgreichen Prüfungsanmeldung. Der Exam Management Service speichert, welcher
+Student zu welcher Prüfung angemeldet ist. Dabei handelt es sich um eine Many-to-Many-Relation, deren Integrität auf Ebene
+der Microservices sichergestellt werden muss. Zu diesem Zweck sendet der Exam Management Service jeweils eine GET-Anfrage
+an den Exam Service sowie an den Student Service, um zu verifizieren, dass sowohl die Prüfung, für die sich der Student
+anmelden möchte, existiert, als auch der Student mit der angegebenen Matrikelnummer im System vorhanden ist.
+
+#figure(
+  image("diagrams/register_for_exam.svg", width: 80%),
+  caption: [
+    Sequenzdiagramm für die Prüfungsanmeldung
+  ],
+) <register-for-exam>
 
 == Zielsetzung
 Der Schwerpunkt dieser Arbeit liegt auf der Auseinandersetzung mit den eingesetzten Technologien zur Implementierung.
