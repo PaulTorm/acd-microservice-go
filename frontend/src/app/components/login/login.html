@@ -1,0 +1,20 @@
+<div class="login-form">
+  <input
+    class="name-input"
+    pInputText
+    [(ngModel)]="studentName"
+    placeholder="Name"
+  />
+  <p-select
+    [options]="students"
+    [(ngModel)]="selectedStudent"
+    optionLabel="name"
+    placeholder="Students"
+    class="w-full md:w-56"
+  />
+
+  <div class="buttons">
+    <p-button label="Login" (onClick)="onLoginClick()" />
+    <p-button label="Register" (onClick)="onRegisterClick()" />
+  </div>
+</div>

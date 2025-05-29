@@ -1,0 +1,16 @@
+.login-form {
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.name-input {
+  width: 150px;
+}
+
