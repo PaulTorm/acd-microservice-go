@@ -47,6 +47,31 @@ sinnvoll abbilden zu können.
   ],
 ) <use-cases>
 
+
+== Zielsetzung
+Der Schwerpunkt dieser Arbeit liegt auf der Auseinandersetzung mit den eingesetzten Technologien zur Implementierung.
+Das dargestellte Anwendungsszenario erhebt dabei keinen Anspruch auf Vollständigkeit, und der entwickelte Prototyp ist nicht für den produktiven Einsatz vorgesehen.
+Fehlende Aspekte, die in einer produktiven Umgebung zwingend erforderlich wären, werden in einem späteren Kapitel näher erläutert.
+
+= Architektur
+== Systemüberblick
+Das Gesamtsystem besteht aus insgesamt fünf Microservices, dargestellt in @components. Jede Anfrage gelangt zentral über das Gateway
+in das System. Dieses fungiert als Reverse Proxy, der beispielsweise Anfragen von nicht vertrauenswürdigen IP-Adressen verwerfen kann.
+Jeder Microservice ist als RESTful Web Service implementiert und bietet jeweils eine eigene HTTP-Schnittstelle an. Alle Microservices
+sind zustandslos und speichern ihre Daten bei Bedarf in einer PostgreSQL-Datenbank. Dabei besitzt jeder Microservice eine eigene
+PostgreSQL-Instanz, um einen Single Point of Failure zu vermeiden.
+
+#figure(
+  image("diagrams/components.svg", width: 50%),
+  caption: [
+    Komponentenansicht des Gesamtsystems
+  ],
+) <components>
+
+== Abläufe
+Aus den Anwendungsfällen in @use-cases lassen sich die folgenden drei Sequenzen ableiten.
+
+=== Prüfungsanmeldung
 @register-for-exam zeigt den Ablauf einer erfolgreichen Prüfungsanmeldung. Der Exam Management Service speichert, welcher
 Student zu welcher Prüfung angemeldet ist. Dabei handelt es sich um eine Many-to-Many-Relation, deren Integrität auf Ebene
 der Microservices sichergestellt werden muss. Zu diesem Zweck sendet der Exam Management Service jeweils eine GET-Anfrage
@@ -59,26 +84,6 @@ anmelden möchte, existiert, als auch der Student mit der angegebenen Matrikelnu
     Sequenzdiagramm für die Prüfungsanmeldung
   ],
 ) <register-for-exam>
-
-== Zielsetzung
-Der Schwerpunkt dieser Arbeit liegt auf der Auseinandersetzung mit den eingesetzten Technologien zur Implementierung.
-Das dargestellte Anwendungsszenario erhebt dabei keinen Anspruch auf Vollständigkeit, und der entwickelte Prototyp ist nicht für den produktiven Einsatz vorgesehen.
-Fehlende Aspekte, die in einer produktiven Umgebung zwingend erforderlich wären, werden in einem späteren Kapitel näher erläutert.
-
-= Architektur
-== Systemüberblick
-Das Gesamtsystem besteht aus insgesamt fünf Microservices, dargestellt in @components. Jede Anfrage kommt zentral
-über das Gateway in das System. Es fungiert als Reverse Proxy, der zum Beispiel Anfragen von nicht vertrauenswürdigen
-IP-Adressen verwerfen kann. Jeder Microservice ist implementiert als RESTful Web Service und bietet jeweils seine
-eigene HTTP-Schnittstelle an.
-
-#figure(
-  image("diagrams/components.svg", width: 50%),
-  caption: [
-    Komponentenansicht des Gesamtsystems
-  ],
-) <components>
-
 == Hexagonales Microservice Design
 
 = Implementierung
