@@ -1,0 +1,22 @@
+@startuml
+title View registered exams
+
+actor Student as s
+participant Gateway as gateway
+participant "Exam Management" as management
+participant Exam as exam
+participant Translation as translation
+
+s --> gateway : View registered exams
+gateway --> management : GetExams(studentId)
+
+loop for each registered exam
+    management --> exam : GetExam(examId)
+    exam --> management : Exam object
+    management --> translation : GetTranslation(examId)
+    translation --> management : Translated description
+end
+
+management --> gateway : List of exams
+gateway --> s : List of exams
+@enduml

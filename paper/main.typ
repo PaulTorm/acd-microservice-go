@@ -76,7 +76,7 @@ Aus den Anwendungsfällen in @use-cases lassen sich die folgenden drei Sequenzen
 Student zu welcher Prüfung angemeldet ist. Dabei handelt es sich um eine Many-to-Many-Relation, deren Integrität auf Ebene
 der Microservices sichergestellt werden muss. Zu diesem Zweck sendet der Exam Management Service jeweils eine GET-Anfrage
 an den Exam Service sowie an den Student Service, um zu verifizieren, dass sowohl die Prüfung, für die sich der Student
-anmelden möchte, existiert, als auch der Student mit der angegebenen Matrikelnummer im System vorhanden ist.
+anmelden möchte, existiert, als auch der Student mit der angegebenen Matrikelnummer (studentId) im System vorhanden ist.
 
 #figure(
   image("diagrams/register_for_exam.svg", width: 80%),
@@ -84,6 +84,32 @@ anmelden möchte, existiert, als auch der Student mit der angegebenen Matrikelnu
     Sequenzdiagramm für die Prüfungsanmeldung
   ],
 ) <register-for-exam>
+
+=== Prüfungsabmeldung
+Um sich von einer Prüfung abzumelden, muss lediglich wie in @unregister-for-exam dargestellt
+die entsprechende Relation zwischen Student und Prüfung entfernt werden.
+
+#figure(
+  image("diagrams/unregister_for_exam.svg", width: 80%),
+  caption: [
+    Sequenzdiagramm für die Prüfungsabmeldung
+  ],
+) <unregister-for-exam>
+
+=== Angemeldete Prüfungen einsehen
+Das Einsehen aller angemeldeten Prüfungen ist die aufwendigste Operation, da die englische Übersetzung von der
+Prüfungsentität getrennt ist. Für jeden Eintrag in der Relationstabelle muss anhand der Prüfungsnummer eine
+Anfrage an den Exam Service sowie eine weitere an den Translation Service gestellt werden, um sowohl die
+Prüfung als auch die zugehörige englische Beschreibung zu erhalten. Diese Informationen werden anschließend
+im Exam Management Service zu einem gemeinsamen Objekt zusammengeführt und zurückgegeben.
+
+#figure(
+  image("diagrams/view_registered_exams.svg", width: 80%),
+  caption: [
+    Sequenzdiagramm zum Einsehen der angemeldeten Prüfungen
+  ],
+) <view-registered-exams>
+
 == Hexagonales Microservice Design
 
 = Implementierung
