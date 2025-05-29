@@ -138,9 +138,16 @@ Daher ist es zur Laufzeit unmöglich, sich mit dem Container zu verbinden, was d
   caption: [Größe der Docker Images],
 ) <image-size>
 
+=== Netzwerk Struktur
+Jeder Microservice, der eine Datenbankverbindung aufbaut, befindet sich gemeinsam mit seinem zugehörigen Datenbank-Service
+in einem separaten Docker-Netzwerk. Damit sich die Microservices dennoch untereinander aufrufen können, existiert ein
+zusätzliches, geteiltes Netzwerk, das jedoch keine Datenbank-Services enthält. Dadurch ist es beispielsweise dem Exam
+Service nicht möglich, auf die Datenbank des Student Service zuzugreifen. Sollte ein Microservice durch einen Angriff
+kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
+
 == Kubernetes
 
-= Probleme des Systems
+= Schwächen des Systems
 Ein gravierender Designfehler im Aufbau des Systems besteht in der Trennung der englischen Übersetzung
 vom Rest der Prüfungsentität. Zwar erfolgt der JOIN nicht mehr auf Datenbankebene, sondern wird im Microservice durch
 mehrere getrennte Anfragen realisiert. Ist jedoch entweder der Translation Service oder der Exam Service bei der Erstellung
