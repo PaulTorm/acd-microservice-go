@@ -1,0 +1,19 @@
+@startuml
+skinparam componentStyle rectangle
+
+interface "Repository" as repo
+interface "Request Handler" as handler
+interface "Request Client" as client
+
+component "Postgres Repository" as postgresRepo
+component "HTTP Handler" as httpHandler
+component "HTTP Client" as clientAdapter
+
+[Exam Management Core] ..> handler : use
+[Exam Management Core] ..> repo : use
+[Exam Management Core] ..> client : use
+
+repo <|.. postgresRepo
+handler <|.. httpHandler
+client <|.. clientAdapter
+@enduml

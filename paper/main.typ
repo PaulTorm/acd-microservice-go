@@ -111,6 +111,31 @@ im Exam Management Service zu einem gemeinsamen Objekt zusammengeführt und zur�
 ) <view-registered-exams>
 
 == Hexagonales Microservice Design
+Jeder Microservice folgt dem Prinzip der hexagonalen Architektur, auch bekannt als Ports and Adapters @cockburn-hexagonal.
+Dieses Architekturmuster kapselt die Geschäftslogik innerhalb eines zentralen Anwendungskerns, der unabhängig von technischen
+Details operiert. Der Anwendungskern definiert dabei abstrakte Schnittstellen, sogenannte Ports, über die er mit der Außenwelt
+interagiert. Diese Ports stellen Interfaces dar, beispielsweise für Datenzugriffe oder externe Kommunikationsprozesse,
+ohne konkrete Implementierungen festzulegen. Die tatsächliche Anbindung an externe Systeme erfolgt über Adapter, welche die jeweiligen
+Ports implementieren. Ein einzelner Port kann durch mehrere Adapter bedient werden, die sogar zur Laufzeit austauschbar sind. So kann
+etwa ein Kommunikationsport wahlweise über HTTP, gRPC @grpc oder GraphQL @graphql angesprochen werden. Ebenso kann ein Datenzugriffsport
+unterschiedliche Implementierungen für MariaDB, PostgreSQL oder MongoDB besitzen. Durch diese konsequente Trennung von Kernlogik
+und technischen Schnittstellen entsteht eine lose Kopplung, welche die Testbarkeit erhöht, technologische Flexibilität ermöglicht
+und eine klare Trennung der Verantwortlichkeiten innerhalb des Microservices begünstigt.
+
+#figure(
+  image("diagrams/hexagonal_architecture.svg", width: 50%),
+  caption: [
+    Hexagonale Architektur des Exam Management Microservice
+  ],
+) <hexagonal-architecture>
+
+@hexagonal-architecture veranschaulicht die hexagonale Architektur am Beispiel des Exam Management Service. Dieser Service hängt von
+drei definierten Ports ab, über die er mit der Außenwelt interagiert. Zum einen verarbeitet er eingehende Anfragen über den Handler
+Port, der als Schnittstelle für externe Kommunikation fungiert. Zum anderen kommuniziert der Service selbst mit anderen Services,
+wofür der Request Client Port verantwortlich ist. Zusätzlich werden persistente Daten über den Repository Port verwaltet, der den
+Zugriff auf die Datenbank abstrahiert. Für jeden dieser Ports existiert genau ein zugehöriger Adapter: Eingehende Anfragen werden
+über einen HTTP Handler entgegengenommen, ausgehende Anfragen an andere Services über einen HTTP Client gesendet, und die Datenhaltung
+erfolgt über einen Postgres Repository Adapter.
 
 = Implementierung
 == Die Programmiersprache Go
