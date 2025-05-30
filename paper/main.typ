@@ -139,7 +139,42 @@ erfolgt über einen Postgres Repository Adapter.
 
 = Implementierung
 == Die Programmiersprache Go
+Für die Implementierung des Systems wurde die Programmiersprache Go verwendet. Go ist eine von Google entwickelte, kompilierte Sprache,
+die sich insbesondere durch ihre Einfachheit, Effizienz und gute Unterstützung für nebenläufige Programmierung auszeichnet. Sie kombiniert
+die Leistungsfähigkeit systemnaher Sprachen mit einer modernen, übersichtlichen Syntax. Go bietet ein starkes, statisches Typsystem, eine
+umfangreiche Standardbibliothek sowie native Unterstützung für Netzwerk- und Serverprogrammierung. Aufgrund des geringen Kompilier-Overheads
+und der Möglichkeit, plattformunabhängige Binärdateien zu erzeugen, eignet sich Go besonders gut für den Einsatz in verteilten Systemen
+und Microservice-Architekturen. Ein bemerkenswerter Aspekt ist, dass viele populäre Werkzeuge und Plattformen wie Docker, Kubernetes,
+Prometheus, Grafana und Jaeger in Go entwickelt wurden. Diese breite Adaption in der Industrie unterstreicht die Reife und Praktikabilität der Sprache.
+Go verzichtet bewusst auf bestimmte komplexe Sprachkonstrukte, wie zum Beispiel Vererbung. Ziel ist es, die Lesbarkeit und Wartbarkeit des
+Codes zu erhöhen. Funktionale Konzepte wie map, filter oder reduce sind nicht Bestandteil der Sprache, ebenso wenig wie ternäre Operatoren
+oder if-Expressions mit Rückgabewerten. Schleifen müssen explizit formuliert werden, was zu einem konsistenteren und vorhersagbaren Kontrollfluss führt.
+Eine weitere Besonderheit ist das Fehlerbehandlungsmodell. Go folgt dem Ansatz "Errors as values". Funktionen geben typischerweise neben dem
+eigentlichen Rückgabewert auch einen Fehlerwert vom Typ ```go error``` zurück. Ist dieser Wert ```go nil```, wurde die Funktion erfolgreich ausgeführt.
+Tritt jedoch ein Fehler auf, wird erwartet, dass dieser möglichst unmittelbar behandelt wird. Dadurch wird ein explizites und robustes
+Fehlermanagement gefördert, das sich gut in die klar strukturierte Syntax der Sprache einfügt.
+
 == Goroutines
+Das Modell der nebenläufigen Programmierung in Go basiert auf sogenannten Goroutinen. Ein Codeabschnitt wird zu einer Goroutine, wenn
+er mit dem Schlüsselwort ```go go``` eingeleitet wird. Goroutinen sind keine klassischen Betriebssystem-Threads, sondern deutlich
+leichtergewichtige Konstrukte, die von der Go-Runtime verwaltet werden. Es können tausende Goroutinen gleichzeitig ausgeführt werden,
+obwohl typischerweise nur wenige Threads im Hintergrund aktiv sind. Die Go-Runtime übernimmt die Planung (Scheduling) und Zuordnung
+der Goroutinen auf die verfügbaren Threads. Dadurch ist das Starten einer Goroutine extrem schnell und ressourcenschonend.
+Die Kommunikation und Synchronisation zwischen Goroutinen erfolgt über sogenannte Channels. Channels sind typisierte, thread-sichere
+Warteschlangen mit fester Kapazität, die es ermöglichen, Daten zwischen Goroutinen sicher auszutauschen. Eine Goroutine kann
+beispielsweise blockieren, bis ein Wert aus einem Channel gelesen werden kann, oder selbst Werte in einen Channel schreiben.
+Ein praktisches Beispiel für die Verwendung von Channels ist die Reaktion auf Betriebssystemsignale wie SIGINT oder SIGTERM.
+Das Paket os/signal aus der Standardbibliothek erlaubt es, entsprechende Signale über einen Channel zu empfangen. Dadurch können
+Microservices auf externe Terminierungssignale reagieren und z. B. Ressourcen freigeben oder laufende Prozesse geordnet beenden (graceful shutdown).
+#align(center)[
+```go
+sigChan := make(chan os.Signal, 1)
+signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+<-sigChan
+```
+]
+Auch der HTTP-Server aus der Standardbibliothek nutzt Goroutinen intern: Für jede eingehende Anfrage wird automatisch eine neue
+Goroutine erzeugt, sodass Anfragen asynchron und parallel verarbeitet werden können.
 
 = Deployment
 
