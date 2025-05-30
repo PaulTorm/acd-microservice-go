@@ -180,10 +180,10 @@ Goroutine erzeugt, sodass Anfragen asynchron und parallel verarbeitet werden kö
 Die Standardbibliothek von Go ist sehr umfangreich und enthält unter anderem bereits einen vollständig funktionsfähigen HTTP-Server.
 Aus diesem Grund wurde bei der Implementierung bewusst auf zusätzliche Frameworks verzichtet. Die einzige externe Abhängigkeit im
 Bereich Routing ist das Paket gorilla/mux, das zur Verteilung eingehender Anfragen auf definierte Routen verwendet wird.
-Obwohl moderne Web-Frameworks wie Gin oder Air eine Vielzahl zusätzlicher Funktionalitäten bieten, fiel die Wahl bewusst auf
+Obwohl moderne Web-Frameworks wie Gin @gin oder Air @air eine Vielzahl zusätzlicher Funktionalitäten bieten, fiel die Wahl bewusst auf
 eine schlanke und leichtgewichtige Lösung. Das Anwendungsszenario ist in seiner Komplexität überschaubar, weshalb ein vollwertiges
 Framework als unnötiger Overhead betrachtet wurde. Durch die Reduktion auf das Wesentliche konnte die Größe und Komplexität
-der Anwendung gering gehalten werden. Auch auf den Einsatz eines Object-Relational Mappers (ORM) wie GORM wurde bewusst verzichtet.
+der Anwendung gering gehalten werden. Auch auf den Einsatz eines Object-Relational Mappers (ORM) wie GORM @gorm wurde bewusst verzichtet.
 Stattdessen erfolgt der Zugriff auf die PostgreSQL-Datenbank direkt über das Paket pgxpool mittels SQL. Da in diesem Anwendungsszenario
 alle notwendigen JOINs auf Ebene der Microservices erfolgen, würde ein ORM nur begrenzten Mehrwert bieten. Gleichzeitig würde dessen
 Verwendung eine Vielzahl zusätzlicher Abhängigkeiten mit sich bringen. Für den Gateway Service wurde das ```go httputil.ReverseProxy```
