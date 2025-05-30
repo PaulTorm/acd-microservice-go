@@ -176,6 +176,18 @@ signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 Auch der HTTP-Server aus der Standardbibliothek nutzt Goroutinen intern: Für jede eingehende Anfrage wird automatisch eine neue
 Goroutine erzeugt, sodass Anfragen asynchron und parallel verarbeitet werden können.
 
+== Nachteile
+Trotz ihrer zahlreichen Vorteile weist die Programmiersprache Go einige Einschränkungen auf, die je nach Anwendungskontext relevant
+sein können. Die bewusste Reduktion auf ein minimalistisches Sprachdesign führt dazu, dass bestimmte Sprachmerkmale und -konzepte
+fehlen, die in anderen modernen Programmiersprachen als selbstverständlich gelten. So unterstützte Go lange Zeit keine generischen
+Datentypen. Mit Version 1.18 wurde Generizität eingeführt, allerdings bleiben die Nutzungsmöglichkeiten bislang vergleichsweise
+eingeschränkt und weniger ausdrucksstark als in anderen Sprachen. Auch der sehr explizit gehaltene Ansatz zur Fehlerbehandlung
+bringt Nachteile mit sich. Die wiederholte Überprüfung, ob ein zurückgegebener Fehlerwert ```go nil``` ist, führt häufig zu redundanten
+und wenig eleganten Codeabschnitten. Ein weiterer Nachteil besteht im Einsatz einer Garbage Collection. Obwohl diese in Go sehr
+performant implementiert ist, kann sie in Anwendungen mit Echtzeitanforderungen oder strikt deterministischer Speicherverwaltung
+problematisch sein. Darüber hinaus fehlt eine feingranulare Kontrolle über Speicherlayout und Speicherzugriff, was den Einsatz
+von Go in hardwarenahen oder stark performancekritischen Szenarien einschränkt.
+
 = Deployment
 
 == Docker
