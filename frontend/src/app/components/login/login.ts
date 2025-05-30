@@ -6,6 +6,7 @@ import { SelectModule } from 'primeng/select';
 import { StudentService } from '../../services/student-service';
 import { FormsModule } from '@angular/forms';
 import { Student } from '../../models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,10 @@ import { Student } from '../../models';
   styleUrl: './login.scss',
 })
 export class Login {
-  constructor(private studentService: StudentService) {
+  constructor(
+    private studentService: StudentService,
+    private router: Router,
+  ) {
     this.studentService
       .getStudents()
       .subscribe((students) => (this.students = students));
@@ -25,11 +29,15 @@ export class Login {
   selectedStudent: Student | undefined;
   students: Student[] = [];
 
-  onLoginClick() {}
+  onLoginClick() {
+    this.router.navigate(['/home'], { state: this.selectedStudent });
+  }
 
   onRegisterClick() {
     this.studentService
       .createStudent({ name: this.studentName })
-      .subscribe((student) => console.log('Successfully created student'));
+      .subscribe((student) =>
+        this.router.navigate(['/home'], { state: student }),
+      );
   }
 }

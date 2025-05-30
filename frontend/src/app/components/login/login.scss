@@ -1,16 +1,21 @@
 .login-form {
-  width: 150px;
+  width: 350px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 15px;
 }
 
-.buttons {
+.student-input {
+  width: 250px;
+}
+
+.student-select {
+  width: 250px;
+}
+
+.input-button-container,
+.select-button-container {
   display: flex;
-  justify-content: space-between;
-}
-
-.name-input {
-  width: 150px;
+  gap: 10px;
 }
 
