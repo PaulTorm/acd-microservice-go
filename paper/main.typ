@@ -15,7 +15,13 @@
     )
   ),
   abstract: [
-    TODO
+    Diese Arbeit untersucht die prototypische Umsetzung eines verteilten Softwaresystems auf Basis einer
+    Microservice-Architektur unter Verwendung der Programmiersprache Go. Im Rahmen des Prototyps wird ein
+    abgegrenzter Teilbereich eines Prüfungs-Organisations-Systems realisiert, mit dem Schwerpunkt auf der
+    Prüfungsverwaltung aus Sicht der Studierenden. Der Fokus der Arbeit liegt auf der praktischen Implementierung
+    sowie der Auswahl und Anwendung geeigneter Technologien zur Umsetzung einer modularen und wartbaren
+    Systemarchitektur. Inhaltlich konzentriert sich der Prototyp auf drei zentrale Anwendungsfälle, nämlich
+    die Anmeldung zu einer Prüfung, die Abmeldung von einer Prüfung sowie das Einsehen der aktuell angemeldeten Prüfungen.
   ],
   bibliography: bibliography("refs.bib"),
 )
@@ -246,7 +252,7 @@ Der implementierte Prototyp stellt eine funktionale Grundlage dar, ist jedoch no
 Im Folgenden werden mögliche Weiterentwicklungen aufgezeigt, die für den Einsatz in einer realen Produktivumgebung erforderlich
 oder zumindest wünschenswert wären.
 
-== Secrutiy
+== Security
 Die HTTP-Endpunkte aller Microservices sind in der aktuellen Implementierung ungeschützt, sodass grundsätzlich jeder
 unautorisierte Zugriffe durchführen kann. Um diese Endpunkte abzusichern, kann ein vertrauenswürdiger Identity Provider @digital-identity-guidelines
 genutzt werden, der sogenannte JSON Web Tokens (JWTs) ausstellt. Ein Student könnte beispielsweise ein JWT erhalten,
