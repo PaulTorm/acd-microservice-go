@@ -145,7 +145,7 @@ die Leistungsfähigkeit systemnaher Sprachen mit einer modernen, übersichtliche
 umfangreiche Standardbibliothek sowie native Unterstützung für Netzwerk- und Serverprogrammierung. Aufgrund des geringen Kompilier-Overheads
 und der Möglichkeit, plattformunabhängige Binärdateien zu erzeugen, eignet sich Go besonders gut für den Einsatz in verteilten Systemen
 und Microservice-Architekturen. Ein bemerkenswerter Aspekt ist, dass viele populäre Werkzeuge und Plattformen wie Docker, Kubernetes,
-Prometheus, Grafana und Jaeger in Go entwickelt wurden. Diese breite Adaption in der Industrie unterstreicht die Reife und Praktikabilität der Sprache.
+Prometheus @prometheus, Grafana @grafana und Jaeger @jaeger in Go entwickelt wurden. Diese breite Adaption in der Industrie unterstreicht die Reife und Praktikabilität der Sprache.
 Go verzichtet bewusst auf bestimmte komplexe Sprachkonstrukte, wie zum Beispiel Vererbung. Ziel ist es, die Lesbarkeit und Wartbarkeit des
 Codes zu erhöhen. Funktionale Konzepte wie map, filter oder reduce sind nicht Bestandteil der Sprache, ebenso wenig wie ternäre Operatoren
 oder if-Expressions mit Rückgabewerten. Schleifen müssen explizit formuliert werden, was zu einem konsistenteren und vorhersagbaren Kontrollfluss führt.
@@ -193,7 +193,7 @@ aus der Standardbibliothek verwendet. Dieses ermöglicht es, eingehende HTTP-Anf
 Trotz ihrer zahlreichen Vorteile weist die Programmiersprache Go einige Einschränkungen auf, die je nach Anwendungskontext relevant
 sein können. Die bewusste Reduktion auf ein minimalistisches Sprachdesign führt dazu, dass bestimmte Sprachmerkmale und -konzepte
 fehlen, die in anderen modernen Programmiersprachen als selbstverständlich gelten. So unterstützte Go lange Zeit keine generischen
-Datentypen. Mit Version 1.18 wurde Generizität eingeführt, allerdings bleiben die Nutzungsmöglichkeiten bislang vergleichsweise
+Datentypen. Mit Version 1.18 wurden Generics eingeführt, allerdings bleiben die Nutzungsmöglichkeiten bislang vergleichsweise
 eingeschränkt und weniger ausdrucksstark als in anderen Sprachen. Auch der sehr explizit gehaltene Ansatz zur Fehlerbehandlung
 bringt Nachteile mit sich. Die wiederholte Überprüfung, ob ein zurückgegebener Fehlerwert ```go nil``` ist, führt häufig zu redundanten
 und wenig eleganten Codeabschnitten. Ein weiterer Nachteil besteht im Einsatz einer Garbage Collection. Obwohl diese in Go sehr
@@ -233,6 +233,8 @@ kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
 == Kubernetes
 
 = Schwächen des Systems
+
+== Dateninkonsistenz
 Ein gravierender Designfehler im Aufbau des Systems besteht in der Trennung der englischen Übersetzung
 vom Rest der Prüfungsentität. Zwar erfolgt der JOIN nicht mehr auf Datenbankebene, sondern wird im Microservice durch
 mehrere getrennte Anfragen realisiert. Ist jedoch entweder der Translation Service oder der Exam Service bei der Erstellung
@@ -240,7 +242,39 @@ einer Prüfung nicht verfügbar, kann dies zu einem inkonsistenten Zustand führ
 verteilter Transaktionen und die Implementierung eines Two-Phase Commit @two-phase-commit.
 
 = Ausblick
-== Secrutiy
-== Monitoring
-== Distributed Tracing
+Der implementierte Prototyp stellt eine funktionale Grundlage dar, ist jedoch noch nicht für den produktiven Einsatz geeignet.
+Im Folgenden werden mögliche Weiterentwicklungen aufgezeigt, die für den Einsatz in einer realen Produktivumgebung erforderlich
+oder zumindest wünschenswert wären.
 
+== Secrutiy
+Die HTTP-Endpunkte aller Microservices sind in der aktuellen Implementierung ungeschützt, sodass grundsätzlich jeder
+unautorisierte Zugriffe durchführen kann. Um diese Endpunkte abzusichern, kann ein vertrauenswürdiger Identity Provider @digital-identity-guidelines
+genutzt werden, der sogenannte JSON Web Tokens (JWTs) ausstellt. Ein Student könnte beispielsweise ein JWT erhalten,
+der seine Matrikelnummer sowie seine Rolle enthält. Dieser Token wird bei jeder Anfrage an den Microservice mitgesendet.
+Der Microservice überprüft anschließend die Gültigkeit der Signatur, ob der Token abgelaufen ist und ob die im Token
+enthaltene Rolle berechtigt ist, auf die angeforderte Ressource zuzugreifen. Auf diese Weise kann der Zugriff feingranular
+gesteuert werden. Das zugrunde liegende Sicherheitskonzept wird als Role-Based Access Control (RBAC) bezeichnet. Es
+ermöglicht eine präzise Definition von Berechtigungen basierend auf Rollen und sorgt dafür, dass nur autorisierte Nutzer
+bestimmte Operationen auf bestimmten Ressourcen ausführen dürfen.
+
+== Monitoring
+Verteilte Microservice-Architekturen erfordern eine umfassende Überwachung, um Verfügbarkeit, Stabilität und Fehlertoleranz
+sicherzustellen. Mit Hilfe spezialisierter Werkzeuge wie Prometheus @prometheus können Dienste selbstständig Metriken erfassen und
+exportieren, etwa zur Auslastung, Antwortzeiten oder Fehlerhäufigkeit. Diese Metriken lassen sich über Dashboards wie
+Grafana @grafana in Echtzeit visualisieren, wodurch ein präziser Einblick in den Systemzustand ermöglicht wird. In Kombination
+mit einem Alertmanager können definierte Schwellenwerte überwacht und bei kritischen Zuständen automatisiert Benachrichtigungen
+an das Entwicklungsteam versendet werden. Darüber hinaus können Mechanismen zur automatisierten Neustartsteuerung implementiert
+werden, um die Selbstheilung des Systems zu fördern. Durch dieses Monitoring- und Alerting-Konzept lässt sich die Betriebssicherheit
+erhöhen und die Reaktionszeit auf Systemfehler deutlich verkürzen.
+
+== Distributed Tracing
+In Microservice-Architekturen besteht eine der zentralen Herausforderungen darin, Anfragen über zahlreiche, voneinander getrennte
+Dienste hinweg nachvollziehbar zu machen. Herkömmliches Logging reicht hierbei oft nicht aus, da eine einzelne Benutzeranfrage
+mehrere Microservices durchlaufen kann, wobei jeder Dienst eigene Logs erzeugt. Zur Lösung dieses Problems wird Distributed Tracing
+eingesetzt, ein Verfahren, das es ermöglicht, zusammenhängende Abläufe über Systemgrenzen hinweg konsistent zu verfolgen.
+Mit Werkzeugen wie Jaeger @jaeger werden Anfragen mit eindeutigen Trace-IDs versehen, die während der gesamten Verarbeitung
+erhalten bleiben. So können Zeitverläufe, Fehlerquellen und Performance-Engpässe über alle beteiligten Services hinweg analysiert werden.
+Die gewonnenen Traces lassen sich visualisieren und bieten somit eine detaillierte Einsicht in das Laufzeitverhalten verteilter Systeme.
+Durch Distributed Tracing können Abhängigkeiten transparent gemacht, Ursachen für Latenzen identifiziert und die Gesamtperformance einer
+Microservice-Architektur gezielt optimiert werden. Es stellt damit ein wesentliches Werkzeug zur Fehlersuche und Qualitätssicherung in
+komplexen, verteilten Anwendungen dar.
