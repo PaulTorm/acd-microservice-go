@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "acd-microservice-go.fullname" . }}
+  name: {{ include "acd-microservice-go.studentname" . }}
   labels:
     {{- include "acd-microservice-go.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.student.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    - port: {{ .Values.student.service.port }}
+      targetPort: {{ .Values.student.service.targetPort }}
   selector:
     {{- include "acd-microservice-go.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "acd-microservice-go.exammanagementname" . }}
+  labels:
+    {{- include "acd-microservice-go.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.exammanagement.service.type }}
+  ports:
+    - port: {{ .Values.exammanagement.service.port }}
+      targetPort: {{ .Values.exammanagement.service.targetPort }}
+  selector:
+    {{- include "acd-microservice-go.selectorLabels" . | nindent 4 }}

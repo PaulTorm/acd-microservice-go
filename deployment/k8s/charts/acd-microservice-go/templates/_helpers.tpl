@@ -60,3 +60,27 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+Application specific helpers
+*/}}
+{{- define "acd-microservice-go.examname" -}}
+{{- printf "%s-%s" ( include "acd-microservice-go.fullname" . ) .Values.exam.name }}
+{{- end }}
+
+{{- define "acd-microservice-go.exammanagementname" -}}
+{{- printf "%s-%s" ( include "acd-microservice-go.fullname" . ) .Values.exammanagement.name }}
+{{- end }}
+
+{{- define "acd-microservice-go.gatewayname" -}}
+{{- printf "%s-%s" ( include "acd-microservice-go.fullname" . ) .Values.gateway.name }}
+{{- end }}
+
+{{- define "acd-microservice-go.studentname" -}}
+{{- printf "%s-%s" ( include "acd-microservice-go.fullname" . ) .Values.student.name }}
+{{- end }}
+
+{{- define "acd-microservice-go.translationname" -}}
+{{- printf "%s-%s" ( include "acd-microservice-go.fullname" . ) .Values.translation.name }}
+{{- end }}
