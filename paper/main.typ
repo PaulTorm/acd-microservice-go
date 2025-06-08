@@ -29,7 +29,7 @@
 = Einleitung
 
 == Motivation
-An der Hochschule Mannheim existiert ein zentrales System zur Prüfungsorganisation (POS), das sämtliche prüfungsrelevanten Abläufe verwaltet.
+An der Hochschule Mannheim existiert ein zentrales System zur Prüfungs-Organisations-Systems (POS), das sämtliche prüfungsrelevanten Abläufe verwaltet.
 Für jede Prüfung ist sowohl eine deutsche als auch eine englische Beschreibung erforderlich. Während die deutschen Beschreibungen in der
 lokalen Datenbank der Hochschule Mannheim gespeichert sind, befinden sich die englischen Übersetzungen in einer externen Datenbank an
 der Hochschule Reutlingen. Dadurch entstehen standortübergreifende JOIN-Operationen, die die Performance des Gesamtsystems spürbar beeinträchtigen.
@@ -40,7 +40,7 @@ und komponiert, dass ein solcher JOIN nicht mehr notwendig ist.
 
 == Akteure und Anwendungsfälle
 Um den Umfang des Projekts einzugrenzen, wurde in diesem Paper prototypisch lediglich ein ausgewählter Teilbereich des
-Prüfungsorganisationssystems (POS) implementiert. Im Fokus stehen dabei die Studierenden mit den zentralen Anwendungsfällen
+POS implementiert. Im Fokus stehen dabei die Studierenden mit den zentralen Anwendungsfällen
 der Anmeldung und Abmeldung zu Prüfungen sowie der Einsicht einer Übersicht aller angemeldeten Prüfungen. Zusätzlich wurden
 Funktionalitäten zum Anlegen, Bearbeiten, Einsehen und Löschen von Prüfungen umgesetzt. Für diese administrativen Operationen
 ist zwar kein expliziter Akteur definiert, sie sind jedoch notwendig, um die genannten Anwendungsfälle der Studierenden
@@ -52,7 +52,6 @@ sinnvoll abbilden zu können.
     Use-Case Diagramm der Prüfungsverwaltung für Studierende
   ],
 ) <use-cases>
-
 
 == Zielsetzung
 Der Schwerpunkt dieser Arbeit liegt auf der Auseinandersetzung mit den eingesetzten Technologien zur Implementierung.
@@ -208,6 +207,8 @@ problematisch sein. Darüber hinaus fehlt eine feingranulare Kontrolle über Spe
 von Go in hardwarenahen oder stark performancekritischen Szenarien einschränkt.
 
 = Deployment
+Der folgende Abschnitt beschreibt das Deplyment der Microservices in Docker Compose und Kubernetes.
+Dabei wurde für Kubernetes das Werkzeug Minikube verwendet.
 
 == Docker
 Das Bauen der Docker Images erfolgt in zwei Stages. Die erste Stage enthält den Go Compiler
@@ -241,11 +242,18 @@ kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
 = Schwächen des Systems
 
 == Dateninkonsistenz
-Ein gravierender Designfehler im Aufbau des Systems besteht in der Trennung der englischen Übersetzung
-vom Rest der Prüfungsentität. Zwar erfolgt der JOIN nicht mehr auf Datenbankebene, sondern wird im Microservice durch
-mehrere getrennte Anfragen realisiert. Ist jedoch entweder der Translation Service oder der Exam Service bei der Erstellung
-einer Prüfung nicht verfügbar, kann dies zu einem inkonsistenten Zustand führen. Dieses Problem erfordert den Einsatz
-verteilter Transaktionen und die Implementierung eines Two-Phase Commit @two-phase-commit.
+Ein wesentlicher Designmangel im aktuellen System besteht in der trennenden Modellierung der englischen Übersetzung
+als separate Entität, losgelöst von der zentralen Prüfungsentität. Obwohl die Verknüpfung der Daten nicht mehr auf
+Datenbankebene durch einen JOIN erfolgt, sondern im Microservice über mehrere voneinander unabhängige Anfragen
+realisiert wird, birgt dieses Vorgehen erhebliche Risiken. Ist zum Zeitpunkt der Prüfungserstellung entweder der
+Translation Service oder der Exam Service nicht verfügbar, kann dies zu einem inkonsistenten Systemzustand führen.
+Zur Gewährleistung der Konsistenz wäre der Einsatz verteilter Transaktionen, etwa durch einen Two-Phase Commit
+@two-phase-commit, erforderlich. Dies bringt jedoch erhöhte Komplexität und Performanceprobleme mit sich. Eine
+saubere und langfristig wartbare Lösung bestünde darin, die englische Übersetzung direkt in die Prüfungsentität
+zu integrieren, da es sich um eine eindeutige One-to-One Relation handelt. Dadurch ließe sich das Problem der
+Dateninkonsistenz vollständig umgehen. Während eine solche Integration im Rahmen einer Neuentwicklung problemlos
+realisierbar wäre, bedarf es für ein bestehendes System einer durchdachten Migrationsstrategie, um den Übergang
+konsistent und ohne Datenverlust zu gestalten.
 
 = Ausblick
 Der implementierte Prototyp stellt eine funktionale Grundlage dar, ist jedoch noch nicht für den produktiven Einsatz geeignet.
