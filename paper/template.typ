@@ -51,6 +51,8 @@
     }
   )
 
+  show link: set text(fill: blue)
+
   // Style bibliography.
   show std.bibliography: set text(8pt)
   show std.bibliography: set block(spacing: 0.5em)

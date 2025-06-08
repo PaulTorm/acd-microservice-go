@@ -27,6 +27,8 @@
 )
 
 = Einleitung
+Der gesamte Quellcode für das Projekt, inklusive des Papers, der Präsentation und eines kleinen Angular Frontends
+für die Live-Demo, befindet sich unter Versionskontrolle auf #link("https://github.com/PaulTorm/acd-microservice-go")[Github].
 
 == Motivation
 An der Hochschule Mannheim existiert ein zentrales System zur Prüfungs-Organisations-Systems (POS), das sämtliche prüfungsrelevanten Abläufe verwaltet.
