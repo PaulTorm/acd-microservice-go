@@ -1,13 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "acd-microservice-go.exammanagementname" . }}
-  labels:
-    {{- include "acd-microservice-go.labels" . | nindent 4 }}
+  name: {{ .Values.examManagement.name }}
 spec:
-  type: {{ .Values.exammanagement.service.type }}
-  ports:
-    - port: {{ .Values.exammanagement.service.port }}
-      targetPort: {{ .Values.exammanagement.service.targetPort }}
   selector:
-    {{- include "acd-microservice-go.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ .Values.examManagement.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.examManagement.port }}
+      targetPort: {{ .Values.examManagement.port }}

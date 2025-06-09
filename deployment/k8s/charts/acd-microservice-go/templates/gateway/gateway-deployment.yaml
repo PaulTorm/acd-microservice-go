@@ -1,23 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "acd-microservice-go.gatewayname" . }}
+  name: {{ .Values.gateway.name }}
   labels:
-    {{- include "acd-microservice-go.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ .Values.gateway.name }}
 spec:
   selector:
     matchLabels:
-      {{- include "acd-microservice-go.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ .Values.gateway.name }}
   template:
     metadata:
       labels:
-        {{- include "acd-microservice-go.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        app.kubernetes.io/name: {{ .Values.gateway.name }}
     spec:
       containers:
         - name: {{ .Values.gateway.name }}
-          image: "{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}"
+          image: "{{ .Values.gateway.name }}:{{ .Values.gateway.tag }}"
+          imagePullPolicy: Never
           ports:
-            - containerPort: {{ .Values.gateway.service.port }}
+            - containerPort: {{ .Values.gateway.port }}

@@ -1,23 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "acd-microservice-go.exammanagementname" . }}
+  name: {{ .Values.examManagement.name }}
   labels:
-    {{- include "acd-microservice-go.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ .Values.examManagement.name }}
 spec:
   selector:
     matchLabels:
-      {{- include "acd-microservice-go.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ .Values.examManagement.name }}
   template:
     metadata:
       labels:
-        {{- include "acd-microservice-go.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        app.kubernetes.io/name: {{ .Values.examManagement.name }}
     spec:
       containers:
-        - name: {{ .Values.exammanagement.name }}
-          image: "{{ .Values.exammanagement.image.repository }}:{{ .Values.exammanagement.image.tag }}"
+        - name: {{ .Values.examManagement.name }}
+          image: "{{ .Values.examManagement.name }}:{{ .Values.examManagement.tag }}"
+          imagePullPolicy: Never
           ports:
-            - containerPort: {{ .Values.exammanagement.service.port }}
+            - containerPort: {{ .Values.examManagement.port }}

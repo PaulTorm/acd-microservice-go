@@ -1,0 +1,8 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: translation-db
+spec:
+  instances: 1
+  storage:
+    size: 200Mi

@@ -1,54 +1,29 @@
+frontend:
+  name: "frontend"
+  tag: latest
+  port: 80
+
 exam:
   name: "exam"
-  image:
-    repository: exam
-    tag: 1.0
-  service:
-    type: ClusterIP
-    port: 80
-    targetPort: 8080
-  exam: postgres://postgres:%s@exam-db:5432/postgres?sslmode=disable
+  tag: latest
+  port: 8080
 
-exammanagement:
-  name: "exammanagement"
-  image:
-    repository: exammanagement
-    tag: 1.0
-  service:
-    type: ClusterIP
-    port: 80
-    targetPort: 8080
-  databaseUri: postgres://postgres:%s@exam-management-db:5432/postgres?sslmode=disable
+examManagement:
+  name: "exam-management"
+  tag: latest
+  port: 8080
 
 gateway:
   name: "gateway"
-  image:
-    repository: gateway
-    tag: 1.0
-  service:
-    type: ClusterIP
-    port: 80
-    targetPort: 8080
-    nodePort: 30007
+  tag: latest
+  port: 8080
 
 student:
   name: "student"
-  image:
-    repository: student
-    tag: 1.0
-  service:
-    type: ClusterIP
-    port: 80
-    targetPort: 8080
-  databaseUri: postgres://postgres:%s@student-db:5432/postgres?sslmode=disable
+  tag: latest
+  port: 8080
 
 translation:
   name: "translation"
-  image:
-    repository: translation
-    tag: 1.0
-  service:
-    type: ClusterIP
-    port: 80
-    targetPort: 8080
-  databaseUri: postgres://postgres:%s@translation-db:5432/postgres?sslmode=disable
+  tag: latest
+  port: 8080

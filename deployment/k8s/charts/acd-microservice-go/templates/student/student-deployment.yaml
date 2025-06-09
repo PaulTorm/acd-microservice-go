@@ -1,35 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "acd-microservice-go.studentname" . }}
+  name: {{ .Values.student.name }}
   labels:
-    {{- include "acd-microservice-go.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ .Values.student.name }}
 spec:
   selector:
     matchLabels:
-      {{- include "acd-microservice-go.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ .Values.student.name }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "acd-microservice-go.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        app.kubernetes.io/name: {{ .Values.student.name }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.podSecurityContext }}
-      securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
         - name: {{ .Values.student.name }}
-          image: "{{ .Values.student.image.repository }}:{{ .Values.student.image.tag }}"
+          image: "{{ .Values.student.name }}:{{ .Values.student.tag }}"
+          imagePullPolicy: Never
           ports:
-            - containerPort: {{ .Values.student.service.port }}
+            - containerPort: {{ .Values.student.port }}
