@@ -1,38 +1,25 @@
 This repository contains code for a microservice demo project using [go](https://go.dev/doc/) and [postgres](https://www.postgresql.org/).
 The entire process is documented and compiled into a paper using [typst](https://typst.app/).
 
-- POS
-    - Prüfungen + Noten: Exam Service (alle Prüfungen mit PN (uuid), Kürzel, Credits, Modulname)
-    - PNr. + Englische Übersetzung: Translation Service (PN, Englische Übersetzung vom Modulnamen)
-    - Student (Matrikelnummer, Vorname, Nachname)
-    - Prüfungsverwaltung Service (PNr, Matr. Nr, Note)
+# How to run in Minikube
 
-- Use-Cases: Prüfung anmelden, abmelden, einsehen (mit oder ohne Übersetzung)
+1. Install the CloudNativePG Operator
 
-- Actors: Student
+```bash
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm upgrade --install cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  cnpg/cloudnative-pg
+```
 
-- Motivation
-- Go gute Standardlib, Begrüdung für kein Framework
-- Dockerfile, scratch Container, ~5MB klein
-- Request Handler, Middleware, goroutine?, Asynchronität
-- Datenbankzugriffe, Postgres Adapter
-- QA (Tests, Dependency Injection)
-- Architektur (hexagonal, Ports & Adapters) Begründung warum wir es gewählt haben
-- Systemarchitektur auf einer höheren Ebene (Englische Übersetzung, vermeitdet Joins standortübergreifend)
-- Networking / NetworkPolicy (immer Service + DB in ein Subnetz und Services soweit voneinander abschotten wie möglich)
-- Eingrenzung, Scope
-- Ausblick (andere Actors und Use-Cases implementieren, z.B. Prof, Versionierung der REST API / deprecation cycle)
-- Security (Absichern von Endpunkten)
-- Begründen warum kein ORM
+2. Build Docker Images
+```bash
+eval $(minikube docker-env)
+docker buildx bake
+```
 
-- OpenAPI?
-- Prometheus, Jaeger?
-- Frontend?
-
-- Meilensteine:
-    0. Bis Montag: Boilerplate, Gliederung
-    1. Programmieren fertig, Einleitung fürs Paper und grobe Struktur circa. 5 Seiten, festlegen was 50% bedeutet in 2
-    2. 50% des Papers (TODO: in 1), Services laufen in K8s
-    3. Done
-    4. Präsentation
-
+3. Install the acd-microservice-go Helm Chart
+```bash
+helm upgrade --install acd-microservice-go .
+```
