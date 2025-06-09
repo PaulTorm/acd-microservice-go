@@ -10,6 +10,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { provideHttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,4 +27,4 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 
-export const ApiUrl = 'api';
+export const ApiUrl = environment.apiUrl;
