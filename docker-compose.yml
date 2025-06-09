@@ -1,13 +1,22 @@
 services:
+  frontend:
+    image: frontend
+    container_name: frontend
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    networks:
+      - frontend
+
   gateway:
     image: gateway
     container_name: gateway
     build:
       context: ./services/gateway
-    ports:
-      - "8080:8080"
     networks:
       - shared
+      - frontend
 
   student:
     image: student
@@ -102,6 +111,7 @@ services:
       - translation_internal
 
 networks:
+  frontend:
   shared:
   student_internal:
   exam_internal:

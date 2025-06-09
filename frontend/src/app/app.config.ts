@@ -26,4 +26,4 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 
-export const ApiUrl = 'http://localhost:8080';
+export const ApiUrl = 'api';

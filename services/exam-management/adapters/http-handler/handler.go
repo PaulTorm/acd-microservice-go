@@ -165,14 +165,14 @@ func (h *Handler) deleteExam(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) getRegistrations(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	registrations, err := h.service.GetRegistrations(vars["id"])
+	exams, err := h.service.GetRegistrations(vars["id"])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(registrations)
+	json.NewEncoder(w).Encode(exams)
 }
 
 func (h *Handler) register(w http.ResponseWriter, r *http.Request) {

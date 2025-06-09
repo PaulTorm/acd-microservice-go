@@ -6,7 +6,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/jackc/pgx/v4 v4.18.3
-	github.com/rs/cors v1.11.1
 )
 
 require (

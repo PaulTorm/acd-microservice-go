@@ -55,12 +55,40 @@ func (s *ExamManagementService) DeleteTranslation(id string) error {
 	return s.client.DeleteTranslation(id)
 }
 
-func (s *ExamManagementService) GetRegistrations(studentId string) ([]ports.ExamRegistration, error) {
-	return s.repo.Get(studentId)
+func (s *ExamManagementService) GetRegistrations(studentId string) ([]ports.ExamWithTranslation, error) {
+	registrations, err := s.repo.Get(studentId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get registrations for student with id %s: %v", studentId, err)
+	}
+
+	exams := []ports.ExamWithTranslation{}
+
+	for _, registration := range registrations {
+		exam, err := s.client.GetExam(registration.ExamId)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get exam %s for student with id %s: %v", registration.ExamId, studentId, err)
+		}
+
+		translation, err := s.client.GetTranslation(registration.ExamId)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get translation %s for student with id %s: %v", registration.ExamId, studentId, err)
+		}
+
+		examWithTranslation := ports.ExamWithTranslation{
+			Id:                 exam.Id,
+			Name:               exam.Name,
+			Description:        exam.Description,
+			Credits:            exam.Credits,
+			EnglishDescription: translation.EnglishDescription,
+		}
+
+		exams = append(exams, examWithTranslation)
+	}
+
+	return exams, nil
 }
 
 func (s *ExamManagementService) Register(studentId string, examId string) error {
-	// Make sure student and exam are valid
 	if _, err := s.client.GetStudent(studentId); err != nil {
 		return fmt.Errorf("failed to find student with id %s: %v", examId, err)
 	}

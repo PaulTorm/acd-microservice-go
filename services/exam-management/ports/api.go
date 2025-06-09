@@ -11,7 +11,7 @@ type Api interface {
 	DeleteExam(id string) error
 	DeleteTranslation(id string) error
 
-	GetRegistrations(studentId string) ([]ExamRegistration, error)
+	GetRegistrations(studentId string) ([]ExamWithTranslation, error)
 	Register(studentId string, examId string) error
 	Unregister(studentId string, examId string) error
 	Grade(studentId string, examId string, grade float32) error
