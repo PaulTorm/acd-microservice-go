@@ -242,7 +242,10 @@ kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
 == Kubernetes
 Im Folgenden wird beschrieben, wie jeder Microservice und die jeweiligen PostgreSQL-Datenbank-Instanzen in das Minikube
 Kubernetes-Cluster deployed werden. Dabei ist das Minikube-Cluster mit 4 CPU-Kernen und 4 GB Arbeitsspeicher konfiguriert
-und befindet sich auf einer Node. Für jeden Microservice ist ein Deployment und ein Service definiert, über welchen die
+und befindet sich auf einer Node.
+
+=== Deployment der Microservices
+Für jeden Microservice ist ein Deployment und ein Service definiert, über welchen die
 entsprechende API des Microservices ansprechbar ist. Der Service leitet die Anfragen dann an das Deployment weiter, welches
 schließlich die Anfrage an die verfügbaren Pods verteilt. Da alle Microservices zustandslos sind, kann die Anzahl der
 verfügbaren Pods, auf die der Service verteilt, dynamisch horizontal skaliert werden, um effektiv Lastspitzen abzufangen.
@@ -251,18 +254,28 @@ extern ansprechen zu können, müssen einige Vorbereitungen getroffen werden. Zu
 Cluster installiert werden. Dieser hat die Aufgabe, externe Anfragen entgegenzunehmen und an entsprechende Services zu
 delegieren. Der in Minikube installierte Ingress-Controller ist eine vorkonfigurierte NGINX-Instanz @nginx, wobei die letztendliche
 Implementierung des Ingress-Controllers austauschbar ist. Es ist also auch möglich, statt NGINX beispielsweise Traefik @traefik zu
-installieren. Anschließend muss für das Gateway eine Ingress-Ressource definiert werden. Diese ist nicht von der konkreten
-Implementierung des Ingress-Controllers abhängig und definiert lediglich, wie und welche Anfragen an welche Services unter
-welchem Port weitergeleitet werden sollen. Es ist also eine reine Spezifikation, die ohne einen funktionierenden Ingress-Controller
-nutzlos wäre. Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-mannheim.int nimmt und sie
-unverändert an den Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int eine fiktive Domain. Sie funktioniert nur lokal,
-da sie in der /etc/hosts-Datei auf die Minikube-IP zeigt. Es gibt also keinen DNS-Eintrag mit dieser Domain, und schon gar kein
-öffentlicher DNS-Dienst wird in Anspruch genommen. Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in
-Kubernetes mit einem Service und Deployment definiert ist. Um diese Webanwendung erreichen zu können, wurde, analog zum Gateway,
-ein Frontend-Ingress definiert, der Anfragen von noten.hs-mannheim.int an den Frontend-Service weiterleitet. Man bemerke, dass
-ein Ingress-Controller ausreicht, auch wenn zwei Ingress-Ressourcen definiert sind. Für beide Ingress-Ressourcen ist definiert,
-dass die Kommunikation bis zum Ingress-Controller über TLS stattfindet. Das dazugehörige Zertifikat wurde mithilfe von OpenSSH
-selbst ausgestellt, signiert und als Kubernetes-Secret in das Cluster importiert. Es bleibt nur noch das Deployment der PostgreSQL-Datenbank.
+verwenden. Anschließend muss für das Gateway eine Ingress-Ressource definiert werden. Diese ist nicht von der konkreten
+Implementierung des Ingress-Controllers abhängig und definiert lediglich, welche Anfragen an welche Services weitergeleitet werden.
+Es ist also eine reine Spezifikation, die ohne einen funktionierenden Ingress-Controller nutzlos wäre.
+
+#figure(
+  image("diagrams/k8s.png", width: 60%),
+  caption: [
+    Übersicht der Deployment Strategie
+  ],
+) <deployment>
+
+Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-mannheim.int nimmt und sie
+unverändert an den Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int fiktive Domain. Sie funktioniert nur lokal,
+da sie in der /etc/hosts-Datei auf die Minikube-IP zeigt. Es gibt sonst keinen DNS-Eintrag mit dieser Domain. 
+
+=== Deployment des Angular Frontends
+Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in Kubernetes mit einem Service und Deployment
+definiert ist. Um diese Webanwendung erreichen zu können, wurde, analog zum Gateway, ein Frontend-Ingress definiert, der
+Anfragen von noten.hs-mannheim.int an den Frontend-Service weiterleitet. Man bemerke, dass ein Ingress-Controller ausreicht,
+auch wenn zwei Ingress-Ressourcen definiert sind. Für beide Ingress-Ressourcen findet die Kommunikation bis zum Ingress-Controller
+mittels TLS statt. Das dazugehörige Zertifikat wurde mithilfe von OpenSSH selbst ausgestellt, signiert und als Kubernetes-Secret
+in das Cluster importiert. Es bleibt nur noch das Deployment der PostgreSQL-Datenbank.
 
 === PostgreSQL in Kubernetes
 Alle Microservices bis auf das Gateway benötigen Zugang zu getrennten Postgres-Datenbank-Instanzen. Die einfachste Möglichkeit,
