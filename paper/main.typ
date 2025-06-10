@@ -240,6 +240,74 @@ Service nicht möglich, auf die Datenbank des Student Service zuzugreifen. Sollt
 kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
 
 == Kubernetes
+Im Folgenden wird beschrieben, wie jeder Microservice und die jeweiligen PostgreSQL-Datenbank-Instanzen in das Minikube
+Kubernetes-Cluster deployed werden. Dabei ist das Minikube-Cluster mit 4 CPU-Kernen und 4 GB Arbeitsspeicher konfiguriert
+und befindet sich auf einer Node. Für jeden Microservice ist ein Deployment und ein Service definiert, über welchen die
+entsprechende API des Microservices ansprechbar ist. Der Service leitet die Anfragen dann an das Deployment weiter, welches
+schließlich die Anfrage an die verfügbaren Pods verteilt. Da alle Microservices zustandslos sind, kann die Anzahl der
+verfügbaren Pods, auf die der Service verteilt, dynamisch horizontal skaliert werden, um effektiv Lastspitzen abzufangen.
+Die Services sind alle vom Typ ClusterIP, das bedeutet, sie sind nur innerhalb des Clusters erreichbar. Um das Gateway
+extern ansprechen zu können, müssen einige Vorbereitungen getroffen werden. Zunächst muss ein Ingress-Controller in das
+Cluster installiert werden. Dieser hat die Aufgabe, externe Anfragen entgegenzunehmen und an entsprechende Services zu
+delegieren. Der in Minikube installierte Ingress-Controller ist eine vorkonfigurierte NGINX-Instanz, wobei die letztendliche
+Implementierung des Ingress-Controllers austauschbar ist. Es ist also auch möglich, statt NGINX beispielsweise Traefik zu
+installieren. Anschließend muss für das Gateway eine Ingress-Ressource definiert werden. Diese ist nicht von der konkreten
+Implementierung des Ingress-Controllers abhängig und definiert lediglich, wie und welche Anfragen an welche Services unter
+welchem Port weitergeleitet werden sollen. Es ist also eine reine Spezifikation, die ohne einen funktionierenden Ingress-Controller
+nutzlos wäre. Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-mannheim.int nimmt und sie
+unverändert an den Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int eine fiktive Domain. Sie funktioniert nur lokal,
+da sie in der /etc/hosts-Datei auf die Minikube-IP zeigt. Es gibt also keinen DNS-Eintrag mit dieser Domain, und schon gar kein
+öffentlicher DNS-Dienst wird in Anspruch genommen. Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in
+Kubernetes mit einem Service und Deployment definiert ist. Um diese Webanwendung erreichen zu können, wurde, analog zum Gateway,
+ein Frontend-Ingress definiert, der Anfragen von noten.hs-mannheim.int an den Frontend-Service weiterleitet. Man bemerke, dass
+ein Ingress-Controller ausreicht, auch wenn zwei Ingress-Ressourcen definiert sind. Für beide Ingress-Ressourcen ist definiert,
+dass die Kommunikation bis zum Ingress-Controller über TLS stattfindet. Das dazugehörige Zertifikat wurde mithilfe von OpenSSH
+selbst ausgestellt, signiert und als Kubernetes-Secret in das Cluster importiert. Es bleibt nur noch das Deployment der PostgreSQL-Datenbank.
+
+=== PostgreSQL in Kubernetes
+Alle Microservices bis auf das Gateway benötigen Zugang zu getrennten Postgres-Datenbank-Instanzen. Die einfachste Möglichkeit,
+dies zu erreichen, besteht darin, jeweils einzelne Pods mit dem Postgres-Image zu deployen. Das wäre das Analogon zum Deployment
+mit Docker Compose. Dieser Ansatz hat jedoch einige Nachteile, denn es gibt keine Replikation der Datenbank-Instanzen, also auch
+keine horizontale Skalierung. Darunter leidet insbesondere auch die Verfügbarkeit. Ein Deployment für die Datenbank mit mehreren
+Replikas funktioniert nicht, da die darunterliegenden Pods zufällig hoch- und heruntergefahren werden und nicht individuell ansprechbar
+sind, da der Pod-Namenssuffix zufällig ist. Bei verteilten Datenbanken ist dies nicht möglich, weil die Master-Datenbank nicht einfach
+terminiert werden darf und die Reihenfolge, in der die Slave-Datenbanken gestartet und gestoppt werden, entscheidend ist. All diese
+Probleme werden von einem StatefulSet gelöst. Es ist eine mögliche und bessere Lösung im Vergleich zum Deployment. Dennoch ist viel
+manueller Aufwand damit verbunden, die Datenbank-Instanzen richtig zu konfigurieren und miteinander zu verbinden. Auch Backups müssen
+manuell durchgeführt werden, und damit sind die Vorteile, eine Postgres-Datenbank in Kubernetes zu betreiben, gering. Es gibt aber
+zum Glück noch eine bessere Lösung, wofür jedoch zunächst einige Kubernetes-Konzepte näher beleuchtet werden müssen.
+
+=== Kubernetes Operator
+Kubernetes Operators sind eine Erweiterung des Kubernetes-Ökosystems, die die Automatisierung und Verwaltung komplexer Anwendungen
+durch die Einbindung domänenspezifischer Kenntnisse ermöglichen. Sie basieren auf dem Konzept von Custom Resource Definitions (CRDs),
+die es ermöglichen, Anwendungslogik in Form von benutzerdefinierten Ressourcen (Custom Resources) zu modellieren. Ein Operator ist
+ein Controller, der diese Ressourcen überwacht und entsprechende Aktionen ausführt, um den gewünschten Zustand (Desired State) der
+Anwendung sicherzustellen. Im Gegensatz zu standardisierten Kubernetes-Objekten wie Pods oder Services, die generische
+Funktionalitäten abdecken, ermöglichen Operators die Automatisierung von Anwendungs-spezifischen Workflows, z.B. die Einrichtung von
+Datenbankreplikaten, die Ausführung von Backups oder die Skalierung statefuler Anwendungen. Der Nutzen von Operators liegt in der
+Reduktion manueller Eingriffe, der Gewährleistung von Konsistenz und der Integration komplexer Anwendungen in die Kubernetes-Infrastruktur.
+
+=== CloudNativePG
+CloudNativePG ist ein Kubernetes-Operator, der speziell für die Verwaltung von PostgreSQL-Datenbanken in Kubernetes-Umgebungen entwickelt
+wurde. Er bietet die Ressource Cluster, mit der eine verteilte Datenbank automatisiert hochgefahren und konfiguriert wird. Dabei wird
+automatisch ein Service erstellt, über den die Datenbank-Instanzen erreichbar sind. Wenn in der Konfiguration kein Benutzername und kein
+Passwort explizit angegeben werden, generiert CloudNativePG automatisch ein Kubernetes-Secret, das den Datenbankzugang bereitstellt.
+Die Menge an Speicher sowie die Anzahl der Instanzen lassen sich dabei sehr einfach konfigurieren @cluster. Mit diesem Ansatz erhält jeder
+Microservice sein eigenes Datenbank-Cluster.
+#figure(align(center)[
+```yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: student-db
+spec:
+  instances: 3
+  storage:
+    size: 1Gi
+```
+], caption: [
+  Ressourcendefinition eines Datenbank Clusters
+]) <cluster>
 
 = Schwächen des Systems
 
