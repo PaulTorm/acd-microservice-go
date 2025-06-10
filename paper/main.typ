@@ -211,7 +211,7 @@ problematisch sein. Darüber hinaus fehlt eine feingranulare Kontrolle über Spe
 von Go in hardwarenahen oder stark performancekritischen Szenarien einschränkt.
 
 = Deployment
-Der folgende Abschnitt beschreibt das Deplyment der Microservices in Docker Compose und Kubernetes.
+Der folgende Abschnitt beschreibt das Deployment der Microservices in Docker Compose und Kubernetes.
 Dabei wurde für Kubernetes das Werkzeug Minikube verwendet.
 
 == Docker
