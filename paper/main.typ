@@ -271,9 +271,9 @@ da sie in der /etc/hosts-Datei auf die Minikube-IP zeigt. Es gibt sonst keinen D
 
 === Deployment des Angular Frontends
 Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in Kubernetes mit einem Service und Deployment
-definiert ist. Um diese Webanwendung erreichen zu können, wurde, analog zum Gateway, ein Frontend-Ingress definiert, der
+definiert ist. Um diese Webanwendung erreichen zu können, wurde, analog zum Gateway, ein Frontend-Ingress angelegt, der
 Anfragen von noten.hs-mannheim.int an den Frontend-Service weiterleitet. Man bemerke, dass ein Ingress-Controller ausreicht,
-auch wenn zwei Ingress-Ressourcen definiert sind. Für beide Ingress-Ressourcen findet die Kommunikation bis zum Ingress-Controller
+auch wenn zwei Ingress-Ressourcen vorhanden sind. Für beide Ingress-Ressourcen findet die Kommunikation bis zum Ingress-Controller
 mittels TLS statt. Das dazugehörige Zertifikat wurde mithilfe von OpenSSH selbst ausgestellt, signiert und als Kubernetes-Secret
 in das Cluster importiert. Es bleibt nur noch das Deployment der PostgreSQL-Datenbank.
 
