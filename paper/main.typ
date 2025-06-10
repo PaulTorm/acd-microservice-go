@@ -170,16 +170,18 @@ der Goroutinen auf die verfügbaren Threads. Dadurch ist das Starten einer Gorou
 Die Kommunikation und Synchronisation zwischen Goroutinen erfolgt über sogenannte Channels. Channels sind typisierte, thread-sichere
 Warteschlangen mit fester Kapazität, die es ermöglichen, Daten zwischen Goroutinen sicher auszutauschen. Eine Goroutine kann
 beispielsweise blockieren, bis ein Wert aus einem Channel gelesen werden kann, oder selbst Werte in einen Channel schreiben.
-Ein praktisches Beispiel für die Verwendung von Channels ist die Reaktion auf Betriebssystemsignale wie SIGINT oder SIGTERM.
+Ein praktisches Beispiel für die Verwendung von Channels ist die Reaktion auf Betriebssystemsignale wie SIGINT oder SIGTERM @channel.
 Das Paket os/signal aus der Standardbibliothek erlaubt es, entsprechende Signale über einen Channel zu empfangen. Dadurch können
 Microservices auf externe Terminierungssignale reagieren und z.B. Ressourcen freigeben oder laufende Prozesse geordnet beenden (graceful shutdown).
-#align(center)[
+#figure(align(center)[
 ```go
 sigChan := make(chan os.Signal, 1)
 signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 <-sigChan
 ```
-]
+], caption: [
+  Go Channel, der auf SIGINT und SIGTERM hört
+]) <channel>
 Auch der HTTP-Server aus der Standardbibliothek nutzt Goroutinen intern: Für jede eingehende Anfrage wird automatisch eine neue
 Goroutine erzeugt, sodass Anfragen asynchron und parallel verarbeitet werden können.
 
