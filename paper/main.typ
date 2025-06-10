@@ -31,9 +31,9 @@ Der gesamte Quellcode für das Projekt, inklusive des Papers, der Präsentation 
 für die Live-Demo, befindet sich unter Versionskontrolle auf #link("https://github.com/PaulTorm/acd-microservice-go")[Github].
 
 == Motivation
-An der Hochschule Mannheim existiert ein zentrales System zur Prüfungs-Organisations-Systems (POS), das sämtliche prüfungsrelevanten Abläufe verwaltet.
+An der Technischen Hochschule Mannheim existiert ein zentrales System zur Prüfungs-Organisations-Systems (POS), das sämtliche prüfungsrelevanten Abläufe verwaltet.
 Für jede Prüfung ist sowohl eine deutsche als auch eine englische Beschreibung erforderlich. Während die deutschen Beschreibungen in der
-lokalen Datenbank der Hochschule Mannheim gespeichert sind, befinden sich die englischen Übersetzungen in einer externen Datenbank an
+lokalen Datenbank der Technischen Hochschule Mannheim gespeichert sind, befinden sich die englischen Übersetzungen in einer externen Datenbank an
 der Hochschule Reutlingen. Dadurch entstehen standortübergreifende JOIN-Operationen, die die Performance des Gesamtsystems spürbar beeinträchtigen.
 Inspiriert von diesem Missstand untersucht dieses Paper eine mögliche Microservice-basierte Lösung für das beschriebene Problem.
 Dabei werden die Prüfungsdetails und die englischen Übersetzungen in getrennten Datenbanken gespeichert.
@@ -268,7 +268,7 @@ Es ist also eine reine Spezifikation, die ohne einen funktionierenden Ingress-Co
 ) <deployment>
 
 Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-mannheim.int nimmt und sie
-unverändert an den Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int fiktive Domain. Sie funktioniert nur lokal,
+unverändert an den Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int eine fiktive Domain. Sie funktioniert nur lokal,
 da sie in der /etc/hosts-Datei auf die Minikube-IP zeigt. Es gibt sonst keinen DNS-Eintrag mit dieser Domain. 
 
 === Deployment des Angular Frontends
