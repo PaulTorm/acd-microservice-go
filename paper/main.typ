@@ -249,8 +249,8 @@ verfügbaren Pods, auf die der Service verteilt, dynamisch horizontal skaliert w
 Die Services sind alle vom Typ ClusterIP, das bedeutet, sie sind nur innerhalb des Clusters erreichbar. Um das Gateway
 extern ansprechen zu können, müssen einige Vorbereitungen getroffen werden. Zunächst muss ein Ingress-Controller in das
 Cluster installiert werden. Dieser hat die Aufgabe, externe Anfragen entgegenzunehmen und an entsprechende Services zu
-delegieren. Der in Minikube installierte Ingress-Controller ist eine vorkonfigurierte NGINX-Instanz, wobei die letztendliche
-Implementierung des Ingress-Controllers austauschbar ist. Es ist also auch möglich, statt NGINX beispielsweise Traefik zu
+delegieren. Der in Minikube installierte Ingress-Controller ist eine vorkonfigurierte NGINX-Instanz @nginx, wobei die letztendliche
+Implementierung des Ingress-Controllers austauschbar ist. Es ist also auch möglich, statt NGINX beispielsweise Traefik @traefik zu
 installieren. Anschließend muss für das Gateway eine Ingress-Ressource definiert werden. Diese ist nicht von der konkreten
 Implementierung des Ingress-Controllers abhängig und definiert lediglich, wie und welche Anfragen an welche Services unter
 welchem Port weitergeleitet werden sollen. Es ist also eine reine Spezifikation, die ohne einen funktionierenden Ingress-Controller
@@ -278,7 +278,7 @@ manuell durchgeführt werden, und damit sind die Vorteile, eine Postgres-Datenba
 zum Glück noch eine bessere Lösung, wofür jedoch zunächst einige Kubernetes-Konzepte näher beleuchtet werden müssen.
 
 === Kubernetes Operator
-Kubernetes Operators sind eine Erweiterung des Kubernetes-Ökosystems, die die Automatisierung und Verwaltung komplexer Anwendungen
+Kubernetes Operators @kubernetes-operator sind eine Erweiterung des Kubernetes-Ökosystems, die die Automatisierung und Verwaltung komplexer Anwendungen
 durch die Einbindung domänenspezifischer Kenntnisse ermöglichen. Sie basieren auf dem Konzept von Custom Resource Definitions (CRDs),
 die es ermöglichen, Anwendungslogik in Form von benutzerdefinierten Ressourcen (Custom Resources) zu modellieren. Ein Operator ist
 ein Controller, der diese Ressourcen überwacht und entsprechende Aktionen ausführt, um den gewünschten Zustand (Desired State) der
@@ -288,7 +288,7 @@ Datenbankreplikaten, die Ausführung von Backups oder die Skalierung statefuler 
 Reduktion manueller Eingriffe, der Gewährleistung von Konsistenz und der Integration komplexer Anwendungen in die Kubernetes-Infrastruktur.
 
 === CloudNativePG
-CloudNativePG ist ein Kubernetes-Operator, der speziell für die Verwaltung von PostgreSQL-Datenbanken in Kubernetes-Umgebungen entwickelt
+CloudNativePG @cloudnativepg ist ein Kubernetes-Operator, der speziell für die Verwaltung von PostgreSQL-Datenbanken in Kubernetes-Umgebungen entwickelt
 wurde. Er bietet die Ressource Cluster, mit der eine verteilte Datenbank automatisiert hochgefahren und konfiguriert wird. Dabei wird
 automatisch ein Service erstellt, über den die Datenbank-Instanzen erreichbar sind. Wenn in der Konfiguration kein Benutzername und kein
 Passwort explizit angegeben werden, generiert CloudNativePG automatisch ein Kubernetes-Secret, das den Datenbankzugang bereitstellt.
