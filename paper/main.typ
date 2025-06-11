@@ -288,6 +288,13 @@ Authentifizierung gegenüber dem Client zu machen. Wir haben ein Self-Signed TLS
 es in unserem eigenen Trust Store hinterlegt. Dadurch wird eine TLS Kommunikation ermöglicht, auch wenn wir die Domain garnicht besitzen, da wir
 der Zertifikat ohne weiteres vertrauen.
 
+#figure(
+  image("diagrams/k8s-svc-relations.png", width: 60%),
+  caption: [
+    Übersicht Zusammenhänge der Kubernetes Services
+  ],
+) <deployment-relations>
+
 === Deployment des Angular Frontends
 Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in Kubernetes mit einem Service und Deployment
 definiert ist. Um diese Webanwendung erreichen zu können, wurde, analog zum Gateway, ein Frontend-Ingress angelegt, der
@@ -306,7 +313,7 @@ sind, da der Pod-Namenssuffix zufällig ist. Bei verteilten Datenbanken ist dies
 terminiert werden darf und die Reihenfolge, in der die Slave-Datenbanken gestartet und gestoppt werden, entscheidend ist. All diese
 Probleme werden von einem StatefulSet gelöst. Es ist eine mögliche und bessere Lösung im Vergleich zum Deployment. Dennoch ist viel
 manueller Aufwand damit verbunden, die Datenbank-Instanzen richtig zu konfigurieren und miteinander zu verbinden. Auch Backups müssen
-manuell durchgeführt werden, und damit sind die Vorteile, eine Postgres-Datenbank in Kubernetes zu betreiben, gering. Es gibt aber
+manuell durchgeführt werden, und damit sind die Vorteile, eine standard Postgres-Datenbank in Kubernetes zu betreiben, gering. Es gibt aber
 zum Glück noch eine bessere Lösung, wofür jedoch zunächst einige Kubernetes-Konzepte näher beleuchtet werden müssen.
 
 === Kubernetes Operator
