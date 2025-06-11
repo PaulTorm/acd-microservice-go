@@ -244,16 +244,6 @@ zusätzliches, geteiltes Netzwerk, das jedoch keine Datenbank-Services enthält.
 Service nicht möglich, auf die Datenbank des Student Service zuzugreifen. Sollte ein Microservice durch einen Angriff
 kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
 
-=== Netzwerkstruktur bei Kubernetes
-Alle Microservices befinden sich in einem gemeinsamen Subnetz, welches per Kubernetes Standard allen Ingress und Egress 
-für Pods in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon genannt zu Sicherheitsrisiken führt,
-werden in Kubernetes networkpolicies benutzt, um die In- und Egress Möglichkeiten einzuschränken. Es wird empfohlen
-ein Deny-All für den Ingress einer jeden Applikation zu erstellen, um den Ingress von nicht beabsichtigten Applikationen
-zu unterbinden. FÜr die jeweiligen Microservices, den Datenbanken und dem Proxy werden networkpolicies erstellt, um Kommunikation
-explizit zu erlauben. FÜr die Anwendung von Networkpolicies muss ein Container Network Interface (CNI) plugin installiert sein.@cni
-Erst dieses erlaubt es networkpolicies zu nutzen und weitere Networking Optionen. Beliebte Beispiele für CNI sind Calico oder Cilium.
-@networkpolicies
-
 == Kubernetes
 Im Folgenden wird beschrieben, wie jeder Microservice und die jeweiligen PostgreSQL-Datenbank-Instanzen in das Minikube
 Kubernetes-Cluster deployed werden. Dabei ist das Minikube-Cluster mit 4 CPU-Kernen und 4 GB Arbeitsspeicher konfiguriert
@@ -294,6 +284,16 @@ der Zertifikat ohne weiteres vertrauen.
     Übersicht Zusammenhänge der Kubernetes Services
   ],
 ) <deployment-relations>
+
+=== Netzwerkstruktur bei Kubernetes
+Alle Microservices befinden sich in einem gemeinsamen Subnetz, welches per Kubernetes-Standard allen Ingress und Egress für Pods
+in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon genannt, zu Sicherheitsrisiken führt, werden in Kubernetes
+NetworkPolicies benutzt, um die In- und Egress-Möglichkeiten einzuschränken. Es wird empfohlen, ein Deny-All für den Ingress einer
+jeden Applikation zu erstellen, um den Ingress von nicht beabsichtigten Applikationen zu unterbinden. Für die jeweiligen
+Microservices, die Datenbanken und den Proxy werden NetworkPolicies erstellt, um Kommunikation explizit zu erlauben.
+Für die Anwendung von NetworkPolicies muss ein Container Network Interface (CNI) Plugin installiert sein. Erst dieses erlaubt
+es, NetworkPolicies zu nutzen und weitere Networking-Optionen. Beliebte Beispiele für CNI sind Calico oder Cilium.
+@networkpolicies
 
 === Deployment des Angular Frontends
 Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in Kubernetes mit einem Service und Deployment
@@ -397,14 +397,16 @@ bestimmte Operationen auf bestimmten Ressourcen ausführen dürfen. Alternativ k
 die dem JWT des Nutzers angefügt werden. Dies erlaubt eine ähnliche feingranulare Steuerung, wie beim RBAC.
 
 === Verschlüsselung
-In unserem Prototyp wird lediglich die Verbidung zwischen Client und Ingress per TLS abgesichert. Dies ist Standard und bei konventionellen Deployments
-meist die einzige Form an Transportverschlüsselung. Im Kontext von Kubernetes handelt es sich häufig um Zero-Trust Umgebungen, dies bedeutet, dass jegliche 
-Verbidung als unsicher angesehen werden muss. Dafür eignet sich mutual TLS (mTLS), dabei wird nicht nur einseitig, klassicher Weise vom Server ein TLS Zertifikat
-bereitgestellt, sondern auch vom zweiten Partner ein Zertifikat. Damit kann die Authentizität des jeweiligen Partners sichergestellt werden und es wird
-eine zusätzliche Form der Verschlüsselung ermöglicht. Im Rahmen von Kubernetes bietet es sich an einen Dienst wie istio zu benutzen. Dieser kann als Side-Car Container deployed werden.
-Durch das Deployment als Sidecar Container ist es bei der Implementierung der Applikation nicht notwendig TLS in irgendeiner Form zu beachten oder selber Zertifikate zu verwalten.
-Sämtlicher traffic wird dann im Pod selber über die loopback Adresse zwischen dem Haupt Container und den Sidecar Container verschickt und der Traffic
-von extern wird ausschließlich über den Sidecar container abgewickelt.
+In unserem Prototyp wird lediglich die Verbindung zwischen Client und Ingress per TLS abgesichert. Dies ist Standard und bei konventionellen Deployments
+meist die einzige Form an Transportverschlüsselung. Im Kontext von Kubernetes handelt es sich häufig um Zero-Trust-Umgebungen. Dies bedeutet, dass
+jegliche Verbindung als unsicher angesehen werden muss. Dafür eignet sich mutual TLS (mTLS). Dabei wird nicht nur einseitig, klassischerweise vom
+Server, ein TLS-Zertifikat bereitgestellt, sondern auch vom zweiten Partner ein Zertifikat. Damit kann die Authentizität des jeweiligen Partners
+sichergestellt werden und es wird eine zusätzliche Form der Verschlüsselung ermöglicht. Im Rahmen von Kubernetes bietet es sich an, einen Dienst
+wie Istio zu benutzen. Dieser kann als Sidecar-Container deployed werden. Durch das Deployment als Sidecar-Container ist es bei der Implementierung
+der Applikation nicht notwendig, TLS in irgendeiner Form zu beachten oder selber Zertifikate zu verwalten. Sämtlicher Traffic wird dann im Pod selber
+über die Loopback-Adresse zwischen dem Hauptcontainer und dem Sidecar-Container verschickt, und der Traffic von extern wird ausschließlich über den
+Sidecar-Container abgewickelt.
+
 
 == Monitoring
 Verteilte Microservice-Architekturen erfordern eine umfassende Überwachung, um Verfügbarkeit, Stabilität und Fehlertoleranz
