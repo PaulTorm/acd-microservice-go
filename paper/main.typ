@@ -355,8 +355,8 @@ oder Umgebungsvariablen abgelegt werden, sondern in dedizierten Kubernetes-Secre
 restlichen Anwendungscode zu trennen und kontrolliert zugänglich zu machen. Für ein höheres Sicherheitsniveau
 empfiehlt sich der Einsatz spezialisierter Secret Vaults wie HashiCorp Vault, AWS Secrets Manager oder Azure Key Vault.
 Diese Lösungen bieten zusätzliche Vorteile wie zentrale Verwaltung, Versionskontrolle, Audit-Logs und automatisches
-Rotieren von Geheimnissen. In Kombination mit Kubernetes-Operatoren oder CSI-Providern ist es zudem möglich, Secrets
-automatisch und sicher in den Cluster zu synchronisieren, ohne sie manuell einpflegen zu müssen. Trotz dieser Vorteile
+Rotieren von Geheimnissen. In Kombination mit Kubernetes-Operatoren ist es zudem möglich, Secrets
+automatisch und sicher in das Cluster zu synchronisieren, ohne sie manuell einpflegen zu müssen. Trotz dieser Vorteile
 setzen wir in unserem Projekt zur Vereinfachung der Infrastruktur und des Deployments auf den direkten Einsatz von
 Kubernetes-Secrets, ohne Integration eines externen Vault-Systems.
 
