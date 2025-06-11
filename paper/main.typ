@@ -250,7 +250,8 @@ für Pods in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon
 werden in Kubernetes networkpolicies benutzt, um die In- und Egress Möglichkeiten einzuschränken. Es wird empfohlen
 ein Deny-All für den Ingress einer jeden Applikation zu erstellen, um den Ingress von nicht beabsichtigten Applikationen
 zu unterbinden. FÜr die jeweiligen Microservices, den Datenbanken und dem Proxy werden networkpolicies erstellt, um Kommunikation
-explizit zu erlauben.
+explizit zu erlauben. FÜr die Anwendung von Networkpolicies muss ein Container Network Interface (CNI) plugin installiert sein.@cni
+Erst dieses erlaubt es networkpolicies zu nutzen und weitere Networking Optionen. Beliebte Beispiele für CNI sind Calico oder Cilium.
 @networkpolicies
 
 == Kubernetes
@@ -281,7 +282,11 @@ Es ist also eine reine Spezifikation, die ohne einen funktionierenden Ingress-Co
 
 Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-mannheim.int nimmt und sie
 unverändert an den Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int eine fiktive Domain. Sie funktioniert nur lokal,
-da sie in der /etc/hosts-Datei auf die Minikube-IP zeigt. Es gibt sonst keinen DNS-Eintrag mit dieser Domain. 
+da sie in der /etc/hosts -Datei auf die Minikube-IP zeigt. Es gibt sonst keinen DNS-Eintrag mit dieser Domain.
+Der Gateway ingress übernimmt dabei auch die Aufgabe des TLS Endpunkts und ermöglicht es damit eine Transportverschlüsselung und
+Authentifizierung gegenüber dem Client zu machen. Wir haben ein Self-Signed TLS Zertifikat benutzt, welches auf api.hs-mannheim.int ausgestellt ist und
+es in unserem eigenen Trust Store hinterlegt. Dadurch wird eine TLS Kommunikation ermöglicht, auch wenn wir die Domain garnicht besitzen, da wir
+der Zertifikat ohne weiteres vertrauen.
 
 === Deployment des Angular Frontends
 Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in Kubernetes mit einem Service und Deployment
@@ -311,7 +316,7 @@ die es ermöglichen, Anwendungslogik in Form von benutzerdefinierten Ressourcen 
 ein Controller, der diese Ressourcen überwacht und entsprechende Aktionen ausführt, um den gewünschten Zustand (Desired State) der
 Anwendung sicherzustellen. Im Gegensatz zu standardisierten Kubernetes-Objekten wie Pods oder Services, die generische
 Funktionalitäten abdecken, ermöglichen Operators die Automatisierung von Anwendungs-spezifischen Workflows, z.B. die Einrichtung von
-Datenbankreplikaten, die Ausführung von Backups oder die Skalierung statefuler Anwendungen. Der Nutzen von Operators liegt in der
+Datenbankreplikaten, die Ausführung von Backups oder die Skalierung zustandsbehafteter Anwendungen. Der Nutzen von Operators liegt in der
 Reduktion manueller Eingriffe, der Gewährleistung von Konsistenz und der Integration komplexer Anwendungen in die Kubernetes-Infrastruktur.
 
 === CloudNativePG
@@ -319,8 +324,11 @@ CloudNativePG @cloudnativepg ist ein Kubernetes-Operator, der speziell für die 
 wurde. Er bietet die Ressource Cluster, mit der eine verteilte Datenbank automatisiert hochgefahren und konfiguriert wird. Dabei wird
 automatisch ein Service erstellt, über den die Datenbank-Instanzen erreichbar sind. Wenn in der Konfiguration kein Benutzername und kein
 Passwort explizit angegeben werden, generiert CloudNativePG automatisch ein Kubernetes-Secret, das den Datenbankzugang bereitstellt.
-Die Menge an Speicher sowie die Anzahl der Instanzen lassen sich dabei sehr einfach konfigurieren @cluster. Mit diesem Ansatz erhält jeder
-Microservice sein eigenes Datenbank-Cluster.
+Die Menge an Speicher sowie die Anzahl der Instanzen lassen sich dabei sehr einfach konfigurieren @cluster. Diese Cluster haben einige Vorteile 
+gegenüber einfachen Datenbanken. Im geclustereten Modus ist es beispielsweise möglich die Datenbank als Primär/Sekundäre Instanzen aufzusetzen und damit
+eine Lastverteilung bei Read Operationen zu schaffen. Außerdem können geplante und nicht geplante Ausfälle durch einen Wechsel der Primären Instanz mit
+zero downtime geschehen. Dies vereinfacht es eine hohe Verfügbarkeit eines Services zu schaffen.
+ Mit diesem Ansatz erhält jeder Microservice sein eigenes Datenbank-Cluster.
 #figure(align(center)[
 ```yaml
 apiVersion: postgresql.cnpg.io/v1
@@ -335,6 +343,18 @@ spec:
 ], caption: [
   Ressourcendefinition eines Datenbank Clusters
 ]) <cluster>
+
+=== Secret Management
+In Kubernetes spielt Secret Management eine zentrale Rolle beim sicheren Umgang mit sensiblen Informationen wie
+Passwörtern, API-Schlüsseln oder TLS-Zertifikaten. Diese Daten sollten niemals in Klartext in Konfigurationsdateien
+oder Umgebungsvariablen abgelegt werden, sondern in dedizierten Kubernetes-Secrets gespeichert werden, um sie vom
+restlichen Anwendungscode zu trennen und kontrolliert zugänglich zu machen. Für ein höheres Sicherheitsniveau
+empfiehlt sich der Einsatz spezialisierter Secret Vaults wie HashiCorp Vault, AWS Secrets Manager oder Azure Key Vault.
+Diese Lösungen bieten zusätzliche Vorteile wie zentrale Verwaltung, Versionskontrolle, Audit-Logs und automatisches
+Rotieren von Geheimnissen. In Kombination mit Kubernetes-Operatoren oder CSI-Providern ist es zudem möglich, Secrets
+automatisch und sicher in den Cluster zu synchronisieren, ohne sie manuell einpflegen zu müssen. Trotz dieser Vorteile
+setzen wir in unserem Projekt zur Vereinfachung der Infrastruktur und des Deployments auf den direkten Einsatz von
+Kubernetes-Secrets, ohne Integration eines externen Vault-Systems.
 
 = Schwächen des Systems
 
@@ -358,6 +378,7 @@ Im Folgenden werden mögliche Weiterentwicklungen aufgezeigt, die für den Einsa
 oder zumindest wünschenswert wären.
 
 == Security
+=== Nutzer Authentifizierung
 Die HTTP-Endpunkte aller Microservices sind in der aktuellen Implementierung ungeschützt, sodass grundsätzlich jeder
 unautorisierte Zugriffe durchführen kann. Um diese Endpunkte abzusichern, kann ein vertrauenswürdiger Identity Provider @digital-identity-guidelines
 genutzt werden, der sogenannte JSON Web Tokens (JWTs) ausstellt. Ein Student könnte beispielsweise ein JWT erhalten,
@@ -366,7 +387,18 @@ Der Microservice überprüft anschließend die Gültigkeit der Signatur, ob der 
 enthaltene Rolle berechtigt ist, auf die angeforderte Ressource zuzugreifen. Auf diese Weise kann der Zugriff feingranular
 gesteuert werden. Das zugrunde liegende Sicherheitskonzept wird als Role-Based Access Control (RBAC) bezeichnet. Es
 ermöglicht eine präzise Definition von Berechtigungen basierend auf Rollen und sorgt dafür, dass nur autorisierte Nutzer
-bestimmte Operationen auf bestimmten Ressourcen ausführen dürfen.
+bestimmte Operationen auf bestimmten Ressourcen ausführen dürfen. Alternativ könnte auch ein Zugriff basierend auf Attributen erfolgen,
+die dem JWT des Nutzers angefügt werden. Dies erlaubt eine ähnliche feingranulare Steuerung, wie beim RBAC.
+
+=== Verschlüsselung
+In unserem Prototyp wird lediglich die Verbidung zwischen Client und Ingress per TLS abgesichert. Dies ist Standard und bei konventionellen Deployments
+meist die einzige Form an Transportverschlüsselung. Im Kontext von Kubernetes handelt es sich häufig um Zero-Trust Umgebungen, dies bedeutet, dass jegliche 
+Verbidung als unsicher angesehen werden muss. Dafür eignet sich mutual TLS (mTLS), dabei wird nicht nur einseitig, klassicher Weise vom Server ein TLS Zertifikat
+bereitgestellt, sondern auch vom zweiten Partner ein Zertifikat. Damit kann die Authentizität des jeweiligen Partners sichergestellt werden und es wird
+eine zusätzliche Form der Verschlüsselung ermöglicht. Im Rahmen von Kubernetes bietet es sich an einen Dienst wie istio zu benutzen. Dieser kann als Side-Car Container deployed werden.
+Durch das Deployment als Sidecar Container ist es bei der Implementierung der Applikation nicht notwendig TLS in irgendeiner Form zu beachten oder selber Zertifikate zu verwalten.
+Sämtlicher traffic wird dann im Pod selber über die loopback Adresse zwischen dem Haupt Container und den Sidecar Container verschickt und der Traffic
+von extern wird ausschließlich über den Sidecar container abgewickelt.
 
 == Monitoring
 Verteilte Microservice-Architekturen erfordern eine umfassende Überwachung, um Verfügbarkeit, Stabilität und Fehlertoleranz
@@ -376,7 +408,8 @@ Grafana @grafana in Echtzeit visualisieren, wodurch ein präziser Einblick in de
 mit einem Alertmanager können definierte Schwellenwerte überwacht und bei kritischen Zuständen automatisiert Benachrichtigungen
 an das Entwicklungsteam versendet werden. Darüber hinaus können Mechanismen zur automatisierten Neustartsteuerung implementiert
 werden, um die Selbstheilung des Systems zu fördern. Durch dieses Monitoring- und Alerting-Konzept lässt sich die Betriebssicherheit
-erhöhen und die Reaktionszeit auf Systemfehler deutlich verkürzen.
+erhöhen und die Reaktionszeit auf Systemfehler deutlich verkürzen. Es können außerdem auch Optimierungen gemacht werden, bspw. eine Auslastungsanalyse, um Kosten
+und Ressourcen einzusparen.
 
 == Distributed Tracing
 In Microservice-Architekturen besteht eine der zentralen Herausforderungen darin, Anfragen über zahlreiche, voneinander getrennte

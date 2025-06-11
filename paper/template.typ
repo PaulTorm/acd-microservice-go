@@ -7,7 +7,7 @@
 ) = {
   set document(title: title, author: authors.map(author => author.name))
 
-  set text(font: "TeX Gyre Termes", size: 10pt, lang: "de")
+  set text(font: "TeX Gyre Termes", size: 12pt, lang: "de")
   set heading(numbering: "1.")
   set page(numbering: "1")
 
