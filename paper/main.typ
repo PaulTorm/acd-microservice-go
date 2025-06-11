@@ -244,16 +244,6 @@ zusätzliches, geteiltes Netzwerk, das jedoch keine Datenbank-Services enthält.
 Service nicht möglich, auf die Datenbank des Student Service zuzugreifen. Sollte ein Microservice durch einen Angriff
 kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
 
-=== Netzwerkstruktur bei Kubernetes
-Alle Microservices befinden sich in einem gemeinsamen Subnetz, welches per Kubernetes Standard allen Ingress und Egress 
-für Pods in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon genannt zu Sicherheitsrisiken führt,
-werden in Kubernetes networkpolicies benutzt, um die In- und Egress Möglichkeiten einzuschränken. Es wird empfohlen
-ein Deny-All für den Ingress einer jeden Applikation zu erstellen, um den Ingress von nicht beabsichtigten Applikationen
-zu unterbinden. FÜr die jeweiligen Microservices, den Datenbanken und dem Proxy werden networkpolicies erstellt, um Kommunikation
-explizit zu erlauben. FÜr die Anwendung von Networkpolicies muss ein Container Network Interface (CNI) plugin installiert sein.@cni
-Erst dieses erlaubt es networkpolicies zu nutzen und weitere Networking Optionen. Beliebte Beispiele für CNI sind Calico oder Cilium.
-@networkpolicies
-
 == Kubernetes
 Im Folgenden wird beschrieben, wie jeder Microservice und die jeweiligen PostgreSQL-Datenbank-Instanzen in das Minikube
 Kubernetes-Cluster deployed werden. Dabei ist das Minikube-Cluster mit 4 CPU-Kernen und 4 GB Arbeitsspeicher konfiguriert
@@ -294,6 +284,16 @@ der Zertifikat ohne weiteres vertrauen.
     Übersicht Zusammenhänge der Kubernetes Services
   ],
 ) <deployment-relations>
+
+=== Netzwerkstruktur bei Kubernetes
+Alle Microservices befinden sich in einem gemeinsamen Subnetz, welches per Kubernetes-Standard allen Ingress und Egress für Pods
+in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon genannt, zu Sicherheitsrisiken führt, werden in Kubernetes
+NetworkPolicies benutzt, um die In- und Egress-Möglichkeiten einzuschränken. Es wird empfohlen, ein Deny-All für den Ingress einer
+jeden Applikation zu erstellen, um den Ingress von nicht beabsichtigten Applikationen zu unterbinden. Für die jeweiligen
+Microservices, die Datenbanken und den Proxy werden NetworkPolicies erstellt, um Kommunikation explizit zu erlauben.
+Für die Anwendung von NetworkPolicies muss ein Container Network Interface (CNI) Plugin installiert sein. Erst dieses erlaubt
+es, NetworkPolicies zu nutzen und weitere Networking-Optionen. Beliebte Beispiele für CNI sind Calico oder Cilium.
+@networkpolicies
 
 === Deployment des Angular Frontends
 Für die Live-Demo wurde eine kleine Angular-Anwendung entwickelt, die auch in Kubernetes mit einem Service und Deployment
