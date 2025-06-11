@@ -288,7 +288,7 @@ Alle Microservices befinden sich in einem gemeinsamen Subnetz, welches per Kuber
 in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon genannt, zu Sicherheitsrisiken führt, werden in Kubernetes
 NetworkPolicies benutzt, um die In- und Egress-Möglichkeiten einzuschränken. Es wird empfohlen, ein Deny-All für den Ingress einer
 jeden Applikation zu erstellen, um nicht beabsichtigte Kommunikation im Cluster zu unterbinden. Für die jeweiligen
-Microservices, die Datenbanken und den Proxy werden NetworkPolicies erstellt, um Kommunikation explizit zu erlauben.
+Microservices, die Datenbanken und das Gateway werden NetworkPolicies erstellt, um Kommunikation explizit zu erlauben.
 Für die Anwendung von NetworkPolicies muss ein Container Network Interface (CNI) Plugin installiert sein. Erst dieses erlaubt
 es, NetworkPolicies zu nutzen und weitere Networking-Optionen. Beliebte Beispiele für CNI sind Calico oder Cilium.
 @networkpolicies
