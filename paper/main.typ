@@ -396,7 +396,7 @@ die dem JWT des Nutzers angefügt werden. Dies erlaubt eine ähnliche feingranul
 
 === Verschlüsselung
 In unserem Prototyp wird lediglich die Verbindung zwischen Client und Ingress per TLS abgesichert. Dies ist Standard und bei konventionellen Deployments
-meist die einzige Form an Transportverschlüsselung. Im Kontext von Kubernetes handelt es sich häufig um Zero-Trust-Umgebungen. Dies bedeutet, dass
+meist die einzige Form der Transportverschlüsselung. Im Kontext von Kubernetes handelt es sich häufig um Zero-Trust-Umgebungen. Dies bedeutet, dass
 jegliche Verbindung als unsicher angesehen werden muss. Dafür eignet sich mutual TLS (mTLS). Dabei wird nicht nur einseitig, klassischerweise vom
 Server, ein TLS-Zertifikat bereitgestellt, sondern auch vom zweiten Partner ein Zertifikat. Damit kann die Authentizität des jeweiligen Partners
 sichergestellt werden und es wird eine zusätzliche Form der Verschlüsselung ermöglicht. Im Rahmen von Kubernetes bietet es sich an, einen Dienst
