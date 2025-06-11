@@ -274,9 +274,8 @@ Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-
 Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int eine fiktive Domain. Sie funktioniert nur lokal, da sie in der /etc/hosts-Datei
 auf die Minikube-IP zeigt. Es gibt sonst keinen DNS-Eintrag mit dieser Domain. Der Gateway-Ingress übernimmt dabei auch die Aufgabe des
 TLS-Endpunkts und ermöglicht es damit, eine Transportverschlüsselung und Authentifizierung gegenüber dem Client durchzuführen.
-Es wurde ein selbstsigniertes TLS-Zertifikat benutzt, welches auf api.hs-mannheim.int ausgestellt ist und es in unserem eigenen Trust Store
-hinterlegt. Dadurch wird eine TLS-Kommunikation ermöglicht, auch wenn die Domain nicht besitzt wird, da dem Zertifikat ohne Weiteres vertraut wird.
-
+Es wurde ein selbstsigniertes TLS-Zertifikat benutzt, welches auf api.hs-mannheim.int ausgestellt ist und in unserem eigenen Trust Store
+hinterlegt. Dadurch wird eine TLS-Kommunikation ermöglicht, auch ohne dass man der Besitzer der Domain ist.
 #figure(
   image("diagrams/k8s-svc-relations.png", width: 60%),
   caption: [
@@ -288,7 +287,7 @@ hinterlegt. Dadurch wird eine TLS-Kommunikation ermöglicht, auch wenn die Domai
 Alle Microservices befinden sich in einem gemeinsamen Subnetz, welches per Kubernetes-Standard allen Ingress und Egress für Pods
 in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon genannt, zu Sicherheitsrisiken führt, werden in Kubernetes
 NetworkPolicies benutzt, um die In- und Egress-Möglichkeiten einzuschränken. Es wird empfohlen, ein Deny-All für den Ingress einer
-jeden Applikation zu erstellen, um den Ingress von nicht beabsichtigten Applikationen zu unterbinden. Für die jeweiligen
+jeden Applikation zu erstellen, um nicht beabsichtigte Kommunikation im Cluster zu unterbinden. Für die jeweiligen
 Microservices, die Datenbanken und den Proxy werden NetworkPolicies erstellt, um Kommunikation explizit zu erlauben.
 Für die Anwendung von NetworkPolicies muss ein Container Network Interface (CNI) Plugin installiert sein. Erst dieses erlaubt
 es, NetworkPolicies zu nutzen und weitere Networking-Optionen. Beliebte Beispiele für CNI sind Calico oder Cilium.
