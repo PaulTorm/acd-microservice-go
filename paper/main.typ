@@ -66,7 +66,7 @@ Das Gesamtsystem besteht aus insgesamt fünf Microservices, dargestellt in @comp
 in das System. Dieses fungiert als Reverse Proxy, der beispielsweise Anfragen von nicht vertrauenswürdigen IP-Adressen verwerfen kann.
 Jeder Microservice ist als RESTful Web Service implementiert und bietet jeweils eine eigene HTTP-Schnittstelle an. Alle Microservices
 sind zustandslos und speichern ihre Daten bei Bedarf in einer PostgreSQL-Datenbank. Dabei besitzt jeder Microservice eine eigene
-PostgreSQL-Instanz, um einen Single Point of Failure zu vermeiden.
+PostgreSQL-Instanz, um die Applikationen separat von einander betreiben und warten zu könne.. Außerdem wird ein Single Point of Failure bei der Datenbank vermieden.
 
 #figure(
   image("diagrams/components.svg", width: 50%),
@@ -223,23 +223,35 @@ ein sehr schlankes Docker Image, wie @image-size zeigt. Ein Nachteil eines Scrat
 dass dieser tatsächlich keinerlei zusätzliche Komponenten enthält – nicht einmal eine Shell.
 Daher ist es zur Laufzeit unmöglich, sich mit dem Container zu verbinden, was das Debugging potenziell erschwert.
 
+
+#show table.cell.where(y: 0): set text(weight: "bold")
 #figure(
   table(
     columns: 6,
     rows: 2,
     align: center,
-    [Image Name], [Gateway], [Exam Management], [Translation], [Exam], [Student],
+    stroke: none,
+    table.header[Image Name][Gateway][Exam Management][Translation][Exam][Student],
     [Image Size], [8.82 MB], [12.3 MB], [11.6 MB], [11.6 MB], [11.6 MB],
   ),
   caption: [Größe der Docker Images],
 ) <image-size>
 
-=== Netzwerk Struktur
+=== Netzwerkstruktur bei Docker
 Jeder Microservice, der eine Datenbankverbindung aufbaut, befindet sich gemeinsam mit seinem zugehörigen Datenbank-Service
 in einem separaten Docker-Netzwerk. Damit sich die Microservices dennoch untereinander aufrufen können, existiert ein
 zusätzliches, geteiltes Netzwerk, das jedoch keine Datenbank-Services enthält. Dadurch ist es beispielsweise dem Exam
 Service nicht möglich, auf die Datenbank des Student Service zuzugreifen. Sollte ein Microservice durch einen Angriff
 kompromittiert werden, lässt sich der potenzielle Schaden somit begrenzen.
+
+=== Netzwerkstruktur bei Kubernetes
+Alle Microservices befinden sich in einem gemeinsamen Subnetz, welches per Kubernetes Standard allen Ingress und Egress 
+für Pods in diesem Subnetz erlaubt. Da dies, wie auch im vorherigen Punkt schon genannt zu Sicherheitsrisiken führt,
+werden in Kubernetes networkpolicies benutzt, um die In- und Egress Möglichkeiten einzuschränken. Es wird empfohlen
+ein Deny-All für den Ingress einer jeden Applikation zu erstellen, um den Ingress von nicht beabsichtigten Applikationen
+zu unterbinden. FÜr die jeweiligen Microservices, den Datenbanken und dem Proxy werden networkpolicies erstellt, um Kommunikation
+explizit zu erlauben.
+@networkpolicies
 
 == Kubernetes
 Im Folgenden wird beschrieben, wie jeder Microservice und die jeweiligen PostgreSQL-Datenbank-Instanzen in das Minikube
@@ -251,7 +263,7 @@ Für jeden Microservice ist ein Deployment und ein Service definiert, über welc
 entsprechende API des Microservices ansprechbar ist. Der Service leitet die Anfragen dann an das Deployment weiter, welches
 schließlich die Anfrage an die verfügbaren Pods verteilt. Da alle Microservices zustandslos sind, kann die Anzahl der
 verfügbaren Pods, auf die der Service verteilt, dynamisch horizontal skaliert werden, um effektiv Lastspitzen abzufangen.
-Die Services sind alle vom Typ ClusterIP, das bedeutet, sie sind nur innerhalb des Clusters erreichbar. Um das Gateway
+Die Services sind alle vom Service Typ ClusterIP, das bedeutet, sie sind nur innerhalb des Clusters erreichbar. Um das Gateway
 extern ansprechen zu können, müssen einige Vorbereitungen getroffen werden. Zunächst muss ein Ingress-Controller in das
 Cluster installiert werden. Dieser hat die Aufgabe, externe Anfragen entgegenzunehmen und an entsprechende Services zu
 delegieren. Der in Minikube installierte Ingress-Controller ist eine vorkonfigurierte NGINX-Instanz @nginx, wobei die letztendliche
