@@ -331,11 +331,10 @@ CloudNativePG @cloudnativepg ist ein Kubernetes-Operator, der speziell für die 
 wurde. Er bietet die Ressource Cluster, mit der eine verteilte Datenbank automatisiert hochgefahren und konfiguriert wird. Dabei wird
 automatisch ein Service erstellt, über den die Datenbank-Instanzen erreichbar sind. Wenn in der Konfiguration kein Benutzername und kein
 Passwort explizit angegeben werden, generiert CloudNativePG automatisch ein Kubernetes-Secret, das den Datenbankzugang bereitstellt.
-Die Menge an Speicher sowie die Anzahl der Instanzen lassen sich dabei sehr einfach konfigurieren @cluster. Diese Cluster haben einige Vorteile 
-gegenüber einfachen Datenbanken. Im geclustereten Modus ist es beispielsweise möglich die Datenbank als Primär/Sekundäre Instanzen aufzusetzen und damit
-eine Lastverteilung bei Read Operationen zu schaffen. Außerdem können geplante und nicht geplante Ausfälle durch einen Wechsel der Primären Instanz mit
-zero downtime geschehen. Dies vereinfacht es eine hohe Verfügbarkeit eines Services zu schaffen.
- Mit diesem Ansatz erhält jeder Microservice sein eigenes Datenbank-Cluster.
+Die Menge an Speicher sowie die Anzahl der Instanzen lassen sich dabei sehr einfach konfigurieren @cluster.
+Im geclusterten Modus wird die Datenbank in primäre und sekundäre Instanzen unterteilt, wodurch eine Lastverteilung bei Leseoperationen entsteht.
+Geplante und ungeplante Ausfälle werden durch einen automatischen Wechsel der primären Instanz ohne Unterbrechung des Betriebs abgefangen. Dadurch
+wird eine hohe Verfügbarkeit des Services sichergestellt. Mit diesem Ansatz erhält jeder Microservice sein eigenes Datenbank-Cluster.
 #figure(align(center)[
 ```yaml
 apiVersion: postgresql.cnpg.io/v1
