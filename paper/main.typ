@@ -398,14 +398,16 @@ bestimmte Operationen auf bestimmten Ressourcen ausführen dürfen. Alternativ k
 die dem JWT des Nutzers angefügt werden. Dies erlaubt eine ähnliche feingranulare Steuerung, wie beim RBAC.
 
 === Verschlüsselung
-In unserem Prototyp wird lediglich die Verbidung zwischen Client und Ingress per TLS abgesichert. Dies ist Standard und bei konventionellen Deployments
-meist die einzige Form an Transportverschlüsselung. Im Kontext von Kubernetes handelt es sich häufig um Zero-Trust Umgebungen, dies bedeutet, dass jegliche 
-Verbidung als unsicher angesehen werden muss. Dafür eignet sich mutual TLS (mTLS), dabei wird nicht nur einseitig, klassicher Weise vom Server ein TLS Zertifikat
-bereitgestellt, sondern auch vom zweiten Partner ein Zertifikat. Damit kann die Authentizität des jeweiligen Partners sichergestellt werden und es wird
-eine zusätzliche Form der Verschlüsselung ermöglicht. Im Rahmen von Kubernetes bietet es sich an einen Dienst wie istio zu benutzen. Dieser kann als Side-Car Container deployed werden.
-Durch das Deployment als Sidecar Container ist es bei der Implementierung der Applikation nicht notwendig TLS in irgendeiner Form zu beachten oder selber Zertifikate zu verwalten.
-Sämtlicher traffic wird dann im Pod selber über die loopback Adresse zwischen dem Haupt Container und den Sidecar Container verschickt und der Traffic
-von extern wird ausschließlich über den Sidecar container abgewickelt.
+In unserem Prototyp wird lediglich die Verbindung zwischen Client und Ingress per TLS abgesichert. Dies ist Standard und bei konventionellen Deployments
+meist die einzige Form an Transportverschlüsselung. Im Kontext von Kubernetes handelt es sich häufig um Zero-Trust-Umgebungen. Dies bedeutet, dass
+jegliche Verbindung als unsicher angesehen werden muss. Dafür eignet sich mutual TLS (mTLS). Dabei wird nicht nur einseitig, klassischerweise vom
+Server, ein TLS-Zertifikat bereitgestellt, sondern auch vom zweiten Partner ein Zertifikat. Damit kann die Authentizität des jeweiligen Partners
+sichergestellt werden und es wird eine zusätzliche Form der Verschlüsselung ermöglicht. Im Rahmen von Kubernetes bietet es sich an, einen Dienst
+wie Istio zu benutzen. Dieser kann als Sidecar-Container deployed werden. Durch das Deployment als Sidecar-Container ist es bei der Implementierung
+der Applikation nicht notwendig, TLS in irgendeiner Form zu beachten oder selber Zertifikate zu verwalten. Sämtlicher Traffic wird dann im Pod selber
+über die Loopback-Adresse zwischen dem Hauptcontainer und dem Sidecar-Container verschickt, und der Traffic von extern wird ausschließlich über den
+Sidecar-Container abgewickelt.
+
 
 == Monitoring
 Verteilte Microservice-Architekturen erfordern eine umfassende Überwachung, um Verfügbarkeit, Stabilität und Fehlertoleranz
