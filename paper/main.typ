@@ -400,7 +400,7 @@ meist die einzige Form der Transportverschlüsselung. Im Kontext von Kubernetes 
 jegliche Verbindung als unsicher angesehen werden muss. Dafür eignet sich mutual TLS (mTLS). Dabei wird nicht nur einseitig, klassischerweise vom
 Server, ein TLS-Zertifikat bereitgestellt, sondern auch vom zweiten Partner ein Zertifikat. Damit kann die Authentizität des jeweiligen Partners
 sichergestellt werden und es wird eine zusätzliche Form der Verschlüsselung ermöglicht. Im Rahmen von Kubernetes bietet es sich an, einen Dienst
-wie Istio zu benutzen. Dieser kann als Sidecar-Container deployed werden. Durch das Deployment als Sidecar-Container ist es bei der Implementierung
+wie Istio zu benutzen.@istio Dieser kann als Sidecar-Container deployed werden. Durch das Deployment als Sidecar-Container ist es bei der Implementierung
 der Applikation nicht notwendig, TLS in irgendeiner Form zu beachten oder selber Zertifikate zu verwalten. Sämtlicher Traffic wird dann im Pod selber
 über die Loopback-Adresse zwischen dem Hauptcontainer und dem Sidecar-Container verschickt, und der Traffic von extern wird ausschließlich über den
 Sidecar-Container abgewickelt.
