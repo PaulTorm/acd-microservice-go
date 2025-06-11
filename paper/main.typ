@@ -270,13 +270,12 @@ Es ist also eine reine Spezifikation, die ohne einen funktionierenden Ingress-Co
   ],
 ) <deployment>
 
-Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-mannheim.int nimmt und sie
-unverändert an den Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int eine fiktive Domain. Sie funktioniert nur lokal,
-da sie in der /etc/hosts -Datei auf die Minikube-IP zeigt. Es gibt sonst keinen DNS-Eintrag mit dieser Domain.
-Der Gateway ingress übernimmt dabei auch die Aufgabe des TLS Endpunkts und ermöglicht es damit eine Transportverschlüsselung und
-Authentifizierung gegenüber dem Client zu machen. Wir haben ein Self-Signed TLS Zertifikat benutzt, welches auf api.hs-mannheim.int ausgestellt ist und
-es in unserem eigenen Trust Store hinterlegt. Dadurch wird eine TLS Kommunikation ermöglicht, auch wenn wir die Domain garnicht besitzen, da wir
-der Zertifikat ohne weiteres vertrauen.
+Der Gateway-Ingress ist so konfiguriert, dass er Anfragen von der Domain api.hs-mannheim.int nimmt und sie unverändert an den
+Gateway-Service weiterleitet. Dabei ist api.hs-mannheim.int eine fiktive Domain. Sie funktioniert nur lokal, da sie in der /etc/hosts-Datei
+auf die Minikube-IP zeigt. Es gibt sonst keinen DNS-Eintrag mit dieser Domain. Der Gateway-Ingress übernimmt dabei auch die Aufgabe des
+TLS-Endpunkts und ermöglicht es damit, eine Transportverschlüsselung und Authentifizierung gegenüber dem Client durchzuführen.
+Es wurde ein selbstsigniertes TLS-Zertifikat benutzt, welches auf api.hs-mannheim.int ausgestellt ist und es in unserem eigenen Trust Store
+hinterlegt. Dadurch wird eine TLS-Kommunikation ermöglicht, auch wenn die Domain nicht besitzt wird, da dem Zertifikat ohne Weiteres vertraut wird.
 
 #figure(
   image("diagrams/k8s-svc-relations.png", width: 60%),
