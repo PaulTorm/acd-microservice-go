@@ -1,0 +1,14 @@
+<p-toolbar>
+  <div>POS</div>
+  <div>
+    <p-button
+      label="Prüfungen an-/abmelden"
+      variant="text"
+      routerLink="overview"
+    />
+    <p-button label="Prüfungen verwalten" variant="text" routerLink="exams" />
+  </div>
+  <p-button variant="outlined" (click)="toggleDarkMode()">
+    <i class="pi pi-sun"></i>
+  </p-button>
+</p-toolbar>
