@@ -5,7 +5,12 @@
     <p-button label="Prüfungsan- und abmeldung" variant="text" routerLink="manage" />
     <p-button label="Prüfungen verwalten" variant="text" routerLink="exams" />
   </div>
-  <p-button variant="outlined" (click)="toggleDarkMode()">
-    <i class="pi pi-sun"></i>
-  </p-button>
+  <div class="flex gap-2">
+    <p-button variant="outlined" (click)="toggleDarkMode()">
+      <i class="pi pi-sun"></i>
+    </p-button>
+    <p-button variant="outlined" routerLink="">
+      <i class="pi pi-sign-out"></i>
+    </p-button>
+  </div>
 </p-toolbar>
