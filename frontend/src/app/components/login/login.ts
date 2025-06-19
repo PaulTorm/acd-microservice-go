@@ -19,9 +19,7 @@ export class Login {
     private studentService: StudentService,
     private router: Router,
   ) {
-    this.studentService
-      .getStudents()
-      .subscribe((students) => (this.students = students));
+    this.studentService.getStudents().subscribe((students) => (this.students = students));
   }
 
   studentName: string = '';
@@ -30,14 +28,14 @@ export class Login {
   students: Student[] = [];
 
   onLoginClick() {
-    this.router.navigate(['/home'], { state: this.selectedStudent });
+    localStorage.setItem('student', JSON.stringify(this.selectedStudent));
+    this.router.navigate(['/overview']);
   }
 
   onRegisterClick() {
-    this.studentService
-      .createStudent({ name: this.studentName })
-      .subscribe((student) =>
-        this.router.navigate(['/home'], { state: student }),
-      );
+    this.studentService.createStudent({ name: this.studentName }).subscribe((student) => {
+      localStorage.setItem('student', JSON.stringify(student));
+      this.router.navigate(['/overview']);
+    });
   }
 }

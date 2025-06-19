@@ -7,7 +7,8 @@
     "build": "ng build",
     "build:production": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "format": "prettier --write ."
   },
   "private": true,
   "dependencies": {
@@ -39,6 +40,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.4",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4.1.8",
     "typescript": "~5.8.2"
   }

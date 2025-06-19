@@ -1,12 +1,21 @@
+<p-toast />
 <p-table [value]="exams" [columns]="columns" [tableStyle]="{ 'min-width': '50rem' }">
   <ng-template #header let-columns>
     <tr>
       <th *ngFor="let column of columns">{{ column.header }}</th>
+      <th></th>
     </tr>
   </ng-template>
   <ng-template #body let-rowData let-columns="columns">
     <tr>
       <td *ngFor="let column of columns">{{ rowData[column.field] }}</td>
+      <td>
+        @if (!rowData.isRegistered) {
+        <p-button icon="pi pi-plus" variant="text" severity="success" (click)="registerExam(rowData)" />
+        } @else {
+        <p-button icon="pi pi-minus" variant="text" severity="danger" (click)="unregisterExam(rowData)" />
+        }
+      </td>
     </tr>
   </ng-template>
 </p-table>

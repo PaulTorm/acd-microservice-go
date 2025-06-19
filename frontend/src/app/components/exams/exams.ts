@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
-import { Dialog } from 'primeng/dialog'
+import { Dialog } from 'primeng/dialog';
 import { Column, Exam } from '../../models';
 import { ExamService } from '../../services/exam-service';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,7 @@ export class Exams implements OnInit {
     { field: 'name', header: 'Name' },
     { field: 'description', header: 'Description' },
     { field: 'englishDescription', header: 'Translation' },
-    { field: 'credits', header: 'Credits' }
+    { field: 'credits', header: 'Credits' },
   ];
 
   dialogVisible: boolean = false;
@@ -34,16 +34,16 @@ export class Exams implements OnInit {
   translationInput: string = '';
   creditsInput: number = 0;
 
-  constructor(private examService: ExamService) { }
+  constructor(private examService: ExamService) {}
 
   ngOnInit(): void {
-    this.examService.getExams().subscribe(exams => this.exams = exams);
+    this.examService.getExams().subscribe((exams) => (this.exams = exams));
   }
 
   deleteExam(id: string) {
     this.examService.deleteExam(id).subscribe(() => {
-      this.exams = this.exams.filter(exam => exam.id === id);
-    })
+      this.exams = this.exams.filter((exam) => exam.id === id);
+    });
   }
 
   cancel() {
@@ -51,15 +51,17 @@ export class Exams implements OnInit {
   }
 
   save() {
-    this.examService.createExam({
-      name: this.nameInput,
-      description: this.descriptionInput,
-      englishDescription: this.translationInput,
-      credits: this.creditsInput
-    }).subscribe(exam => {
-      this.exams = [...this.exams, exam];
-      this.reset();
-    });
+    this.examService
+      .createExam({
+        name: this.nameInput,
+        description: this.descriptionInput,
+        englishDescription: this.translationInput,
+        credits: this.creditsInput,
+      })
+      .subscribe((exam) => {
+        this.exams = [...this.exams, exam];
+        this.reset();
+      });
   }
 
   reset() {
