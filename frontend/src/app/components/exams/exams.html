@@ -1,1 +1,45 @@
-<p>exams works!</p>
+<p-table [value]="exams" [columns]="columns" [tableStyle]="{ 'min-width': '50rem' }">
+  <ng-template #header let-columns>
+      <tr>
+          <th *ngFor="let column of columns">
+              {{ column.header }}
+          </th>
+          <th></th>
+      </tr>
+  </ng-template>
+  <ng-template #body let-rowData let-columns="columns">
+      <tr>
+          <td *ngFor="let column of columns">
+              {{ rowData[column.field] }}
+          </td>
+          <td>
+            <p-button icon="pi pi-trash" variant="text" severity="danger" (click)="deleteExam(rowData['id'])" />
+          </td>
+      </tr>
+  </ng-template>
+</p-table>
+
+<p-button label="Prüfung erstellen" variant="outlined" class="absolute right-2 mt-2" (click)="toggleDialog()" />
+<p-dialog header="Prüfung erstellen" [modal]="true" [(visible)]="dialogVisible" [style]="{ width: '25rem' }">
+  <div class="flex items-center gap-4 mb-4">
+      <label for="name" class="font-semibold w-24">Name</label>
+      <input [(ngModel)]="nameInput" type="text" pInputText id="name" class="flex-auto" autocomplete="off" />
+  </div>
+  <div class="flex items-center gap-4 mb-4">
+      <label for="description" class="font-semibold w-24">Description</label>
+      <input [(ngModel)]="descriptionInput" type="text" pInputText id="description" class="flex-auto" autocomplete="off" />
+  </div>
+  <div class="flex items-center gap-4 mb-4">
+      <label for="translation" class="font-semibold w-24">Translation</label>
+      <input [(ngModel)]="translationInput" type="text" pInputText id="translation" class="flex-auto" autocomplete="off" />
+  </div>
+  <div class="flex items-center gap-4 mb-4">
+      <label for="credits" class="font-semibold w-24">Credits</label>
+      <p-inputnumber [(ngModel)]="creditsInput" mode="decimal" [useGrouping]="false" id="credits" class="flex-auto" autocomplete="off" />
+  </div>
+  <div class="flex justify-end gap-2">
+      <p-button label="Cancel" severity="secondary" (click)="cancel()" />
+      <p-button label="Save" (click)="save()" />
+  </div>
+</p-dialog>
+

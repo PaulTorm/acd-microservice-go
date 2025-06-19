@@ -10,3 +10,8 @@ export type Exam = {
   englishDescription: string;
   credits: number;
 };
+
+export type Column = {
+  field: string;
+  header: string;
+};

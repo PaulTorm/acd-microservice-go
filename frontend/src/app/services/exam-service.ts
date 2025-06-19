@@ -8,10 +8,14 @@ import { ApiUrl } from '../app.config';
   providedIn: 'root',
 })
 export class ExamService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   createExam(exam: Exam): Observable<Exam> {
     return this.http.post<Exam>(`${ApiUrl}/exams`, exam);
+  }
+
+  getExams(): Observable<Exam[]> {
+    return this.http.get<Exam[]>(`${ApiUrl}/exams`);
   }
 
   getExam(id: string): Observable<Exam> {

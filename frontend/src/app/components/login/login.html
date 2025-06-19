@@ -1,21 +1,23 @@
-<div class="login-form">
-  <div class="input-button-container">
-    <input
-      class="student-input"
-      pInputText
-      [(ngModel)]="studentName"
-      placeholder="Name"
-    />
-    <p-button label="Register" (onClick)="onRegisterClick()" />
-  </div>
-  <div class="select-button-container">
-    <p-select
-      class="student-select"
-      [options]="students"
-      [(ngModel)]="selectedStudent"
-      optionLabel="name"
-      placeholder="Students"
-    />
-    <p-button label="Login" (onClick)="onLoginClick()" />
+<div class="flex items-center justify-center h-64">
+  <div class="login-form">
+    <div class="input-button-container">
+      <input
+          class="student-input"
+          pInputText
+          [(ngModel)]="studentName"
+          placeholder="Name"
+          />
+      <p-button label="Register" (onClick)="onRegisterClick()" />
+    </div>
+    <div class="select-button-container">
+      <p-select
+          class="student-select"
+          [options]="students"
+          [(ngModel)]="selectedStudent"
+          optionLabel="name"
+          placeholder="Students"
+          />
+        <p-button label="Login" (onClick)="onLoginClick()" />
+    </div>
   </div>
 </div>
