@@ -42,7 +42,7 @@ export class Exams implements OnInit {
 
   deleteExam(id: string) {
     this.examService.deleteExam(id).subscribe(() => {
-      this.exams = this.exams.filter((exam) => exam.id === id);
+      this.exams = this.exams.filter((exam) => exam.id !== id);
     });
   }
 

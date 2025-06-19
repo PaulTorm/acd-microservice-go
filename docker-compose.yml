@@ -31,7 +31,7 @@ services:
     depends_on:
       - student-db
     environment:
-      DATABASE_URI: ${DATABASE_URI:?Please set DATABASE_URI in your local environment}
+      DATABASE_URI: postgres://postgres:mutti123@student-db:5432/postgres?sslmode=disable
 
   student-db:
     image: postgres
@@ -39,7 +39,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: mutti123
     networks:
       - student_internal
 
@@ -54,7 +54,7 @@ services:
     depends_on:
       - exam-db
     environment:
-      DATABASE_URI: ${DATABASE_URI:?Please set DATABASE_URI in your local environment}
+      DATABASE_URI: postgres://postgres:mutti123@exam-db:5432/postgres?sslmode=disable
 
   exam-db:
     image: postgres
@@ -62,7 +62,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: mutti123
     networks:
       - exam_internal
 
@@ -77,7 +77,7 @@ services:
     depends_on:
       - exam-management-db
     environment:
-      DATABASE_URI: ${DATABASE_URI:?Please set DATABASE_URI in your local environment}
+      DATABASE_URI: postgres://postgres:mutti123@exam-management-db:5432/postgres?sslmode=disable
 
   exam-management-db:
     image: postgres
@@ -85,7 +85,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: mutti123
     networks:
       - exam_management_internal
 
@@ -100,7 +100,7 @@ services:
     depends_on:
       - translation-db
     environment:
-      DATABASE_URI: ${DATABASE_URI:?Please set DATABASE_URI in your local environment}
+      DATABASE_URI: postgres://postgres:mutti123@translation-db:5432/postgres?sslmode=disable
 
   translation-db:
     image: postgres
@@ -108,7 +108,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in your local environment}
+      POSTGRES_PASSWORD: mutti123
     networks:
       - translation_internal
 

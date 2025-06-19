@@ -179,6 +179,11 @@ func (h *Handler) deleteExam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := h.service.UnregisterAllWithExam(vars["id"]); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 

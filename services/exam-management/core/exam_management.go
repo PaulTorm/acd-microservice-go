@@ -107,6 +107,10 @@ func (s *ExamManagementService) Unregister(studentId string, examId string) erro
 	return s.repo.Delete(studentId, examId)
 }
 
+func (s *ExamManagementService) UnregisterAllWithExam(examId string) error {
+	return s.repo.DeleteByExamId(examId)
+}
+
 func (s *ExamManagementService) Grade(studentId string, examId string, grade float32) error {
 	return s.repo.Update(studentId, examId, ports.ExamRegistration{
 		StudentId: studentId,

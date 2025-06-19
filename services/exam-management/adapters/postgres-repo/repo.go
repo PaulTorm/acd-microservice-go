@@ -103,6 +103,17 @@ func (r *Repo) Delete(studentId string, examId string) error {
 	return nil
 }
 
+func (r *Repo) DeleteByExamId(examId string) error {
+	sql := `DELETE FROM exam_registrations WHERE exam_id = $1;`
+
+	_, err := r.pool.Exec(context.Background(), sql, examId)
+	if err != nil {
+		return fmt.Errorf("failed to delete all registrations with exam %s: %v", examId, err)
+	}
+
+	return nil
+}
+
 func tryConnectExponentialBackoff(ctx context.Context, url string) (*pgxpool.Pool, error) {
 	var pool *pgxpool.Pool
 	var err error
