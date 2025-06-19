@@ -19,3 +19,9 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: {{ .Values.examManagement.port }}
+          env:
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: exam-management-db-app
+                  key: uri

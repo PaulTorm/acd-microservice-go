@@ -19,3 +19,9 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: {{ .Values.student.port }}
+          env:
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: student-db-app
+                  key: uri

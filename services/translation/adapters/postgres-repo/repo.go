@@ -16,15 +16,13 @@ type Repo struct {
 }
 
 func NewRepo() *Repo {
-	password, ok := os.LookupEnv("DB_PASSWORD")
+	uri, ok := os.LookupEnv("DATABASE_URI")
 	if !ok {
-		log.Fatalf("DB_PASSWORD is not set")
+		log.Fatalf("DATABASE_URI is not set")
 	}
 
-	url := fmt.Sprintf("postgres://postgres:%s@translation-db:5432/postgres?sslmode=disable", password)
-
 	ctx := context.Background()
-	pool, err := tryConnectExponentialBackoff(ctx, url)
+	pool, err := tryConnectExponentialBackoff(ctx, uri)
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
