@@ -77,12 +77,32 @@ func (h *Handler) createExam(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) getExams(w http.ResponseWriter, r *http.Request) {
 	exams, err := h.service.GetExams()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	examsWithTranslation := []ports.ExamWithTranslation{}
+
+	for _, exam := range exams {
+		translation, err := h.service.GetTranslation(exam.Id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		examWithTranslation := ports.ExamWithTranslation{
+			Id:                 exam.Id,
+			Name:               exam.Name,
+			Description:        exam.Description,
+			Credits:            exam.Credits,
+			EnglishDescription: translation.EnglishDescription,
+		}
+
+		examsWithTranslation = append(examsWithTranslation, examWithTranslation)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(exams)
+	json.NewEncoder(w).Encode(examsWithTranslation)
 }
 
 func (h *Handler) getExam(w http.ResponseWriter, r *http.Request) {
