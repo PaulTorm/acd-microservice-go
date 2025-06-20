@@ -1,40 +1,107 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/white.css" />
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/github.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>Microservices mit Google Go</section>
+        <section>Motivation</section>
+        <section>Systemüberblick</section>
+        <section>Hexagonale Architektur</section>
+        <section>Golang</section>
+        <section data-auto-animate>
+          <pre data-id="code-animation">
+            <code class="hljs javascript" data-trim data-line-numbers>
+              <script type="text/template">
+		func main() {
+			...
+		}
+	      </script>
+	    </code>
+	  </pre>
+        </section>
+        <section data-auto-animate>
+          <pre data-id="code-animation">
+            <code class="hljs javascript" data-trim data-line-numbers="|10-16|11|12|14|15">
+              <script type="text/template">
+		func main() {
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+			core := core.NewStudentService(postgres_repo.NewRepo())
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+			handler := http_handler.NewHandler(core)
+			http.Handle("/", handler)
+
+			server := &http.Server{Addr: ":8080"}
+
+			go func() {
+				sigChan := make(chan os.Signal, 1)
+				signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+				<-sigChan
+				server.Shutdown(context.Background())
+			}()
+
+			log.Println("student service is listening...")
+			server.ListenAndServe()
+		}
+	      </script>
+	    </code>
+	  </pre>
+        </section>
+        <section>Deployment mit Docker Compose</section>
+        <section>Deployment mit Kubernetes</section>
+        <section>CloudNativePG</section>
+        <section data-auto-animate>
+          Postgres Cluster Configuration
+          <pre data-id="code-animation">
+            <code class="hljs javascript" data-trim data-line-numbers="|2|6|7-8">
+              <script type="text/template">
+		apiVersion: postgresql.cnpg.io/v1
+		kind: Cluster
+		metadata:
+		  name: student-db
+		spec:
+		  instances: 1
+		  storage:
+		    size: 200Mi
+	      </script>
+	    </code>
+	  </pre>
+        </section>
+        <section>Schwächen des Systems</section>
+        <section>Live Demo</section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
 </html>
