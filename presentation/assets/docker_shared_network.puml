@@ -1,0 +1,23 @@
+@startuml
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+  RoundCorner 15
+}
+skinparam shadowing false
+skinparam linetype ortho
+
+package "Shared Network" {
+    rectangle "Student" as student
+    rectangle "Exam" as exam
+    rectangle "Translation" as translation
+    rectangle "Gateway" as gateway
+    rectangle "Exam Management" as management
+}
+
+gateway --> management
+management --> exam
+management --> student
+management --> translation
+gateway --> student
+@enduml

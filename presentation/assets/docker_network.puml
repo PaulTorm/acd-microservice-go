@@ -1,0 +1,16 @@
+@startuml
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+  RoundCorner 15
+}
+skinparam shadowing false
+skinparam linetype ortho
+
+package "Internal Network" {
+    rectangle "Microservice" as App
+    rectangle "Database" as DB
+}
+
+App --> DB
+@enduml

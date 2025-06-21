@@ -182,6 +182,39 @@
             </tbody>
           </table>
 	</section>
+	<section>
+	  <h3>Docker Network</h3>
+          <div>
+            <img src="assets/docker_network.svg" style="height: 520px" />
+          </div>
+	</section>
+	<section>
+	  <h3>Docker Network</h3>
+          <div>
+            <img src="assets/docker_shared_network.svg" style="height: 520px" />
+          </div>
+	</section>
+	<section>
+	  <h3>Kubernetes Deployment</h3>
+          <div>
+            <img src="assets/k8s.png" style="height: 520px" />
+          </div>
+	</section>
+	<section>
+	  <h3>Kubernetes Operator</h3>
+	  <ul>
+	    <li class="fragment">Übernimmt die Rolle eines Administrators</li>
+	    <li class="fragment">Kennt alle domänenspezifische Abläufe</li>
+	    <li class="fragment">Überwacht Custom Ressource Definitions (CRDs)</li>
+	  </ul>
+	</section>
+	<section>
+	  <h3>Der CloudNativePG Operator</h3>
+	  <ul>
+	    <li class="fragment">Automatisiert die Erstellung und Konfiguration eines Postgres Datenbank Clusters</li>
+	    <li class="fragment">Backups, Updates, Metrics, RBAC, ...</li>
+	  </ul>
+	</section>
         <section data-auto-animate>
 	  <h3>Postgres Cluster Configuration</h3>
           <pre data-id="code-animation">
@@ -199,8 +232,18 @@
 	    </code>
 	  </pre>
         </section>
-        <section>Schwächen des Systems</section>
-        <section>Live Demo</section>
+        <section>
+	  <h3>Schwächen des Systems</h3>
+	  <ul>
+	    <li class="fragment">Datenintegrität muss auf Microservice Ebene sichergestellt werden</li>
+	    <li class="fragment">Dateninkonsistenz, falls Microservices ausfallen</li>
+	    <li class="fragment">Lösung: Verteilte Transaktionen</li>
+	    <li class="fragment">Fazit: Daten die zusammengehören, zusammen speichern!</li>
+	  </ul>
+	</section>
+	<section>
+	  <h3>Live Demo</h3>
+	</section>
       </div>
     </div>
 
