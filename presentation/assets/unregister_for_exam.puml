@@ -1,0 +1,12 @@
+@startuml
+title Unregister for an exam
+
+actor Student as s
+participant Gateway as gateway
+participant "Exam Management" as management
+
+s --> gateway : Unregister
+gateway --> management : DeleteRegistration(examId, studentId)
+management --> gateway : 200 OK
+gateway --> s : 200 OK
+@enduml

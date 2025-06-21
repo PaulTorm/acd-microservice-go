@@ -1,0 +1,14 @@
+@startuml
+left to right direction
+actor Student as s
+
+package "Exam Management" {
+  usecase "Unregister for an exam" as UC1
+  usecase "Register for an exam" as UC2
+  usecase "View all registered exams" as UC3
+}
+
+s --> UC1
+s --> UC2
+s --> UC3
+@enduml

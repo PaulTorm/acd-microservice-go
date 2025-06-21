@@ -1,0 +1,17 @@
+@startuml
+skinparam componentStyle rectangle
+
+component "API Gateway" as gateway
+component "Student Service" as student
+component "Exam Service" as exam
+component "Translation Service" as translation
+component "Exam Management Service" as management
+
+gateway --> student
+gateway --> management
+
+management --> exam
+management --> translation
+management --> student
+
+@enduml

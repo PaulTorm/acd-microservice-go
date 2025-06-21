@@ -31,9 +31,42 @@
         <section>
 	  <h3>Motivation</h3>
 	</section>
-        <section>Systemüberblick</section>
-        <section>Hexagonale Architektur</section>
-        <section>Golang</section>
+        <section>
+	  <h3>Systemüberblick</h3>
+          <div>
+            <img src="assets/components.svg" style="height: 520px" />
+          </div>
+	</section>
+        <section>
+	  <h3>Golang</h3>
+          <ul>
+            <li class="fragment">Stark typisierte, kompilierte Sprache</li>
+            <li class="fragment">Fokus auf Einfachheit und Kompatibilität</li>
+	    <li class="fragment">Garbage Collector</li>
+          </ul>
+	</section>
+        <section>
+	  <h3>Errors as values</h3>
+          <pre data-id="code-animation">
+            <code class="hljs javascript" data-trim data-line-numbers="|1|2,5|3-4">
+              <script type="text/template">
+		result, err := foo()
+		if err != nil {
+		  slog.Error("error", err.Error())
+		  return someDefaultValue, nil
+		}
+	      </script>
+	    </code>
+	  </pre>
+	</section>
+	<section>
+	  <h3>Goroutines</h3>
+          <ul>
+            <li class="fragment">Leichtgewichtige Objekte</li>
+            <li class="fragment">Go Runtime verteilt Goroutines auf Threads</li>
+            <li class="fragment">Kommunikation zwischen Goroutines mittels Channels</li>
+          </ul>
+	</section>
         <section data-auto-animate>
           <pre data-id="code-animation">
             <code class="hljs javascript" data-trim data-line-numbers>
@@ -73,7 +106,13 @@
 	    </code>
 	  </pre>
         </section>
-        <section>Deployment mit Docker Compose</section>
+	<section>
+	  <h3>Docker Build (2-Stage)</h3>
+	  <ul>
+	    <li class="fragment">Stage 1: Build der Binary</li>
+	    <li class="fragment">Stage 2: Ausführung im <code>scratch</code>-Container</li>
+	  </ul>
+	</section>
 	<section>
           <h3>Docker Image Size</h3>
           <table>
@@ -107,10 +146,8 @@
             </tbody>
           </table>
 	</section>
-        <section>Deployment mit Kubernetes</section>
-        <section>CloudNativePG</section>
         <section data-auto-animate>
-          Postgres Cluster Configuration
+	  <h3>Postgres Cluster Configuration</h3>
           <pre data-id="code-animation">
             <code class="hljs javascript" data-trim data-line-numbers="|2|6|7-8">
               <script type="text/template">
