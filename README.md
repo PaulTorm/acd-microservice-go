@@ -5,7 +5,7 @@ The entire process is documented and compiled into a paper using [typst](https:/
 
 1. Start Minikube
 ```bash
-minikube start --cpus 4 --memory 4096
+minikube start --cpus 4 --memory 4096 --cni calico
 ```
 
 2. Build Docker Images
