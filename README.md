@@ -17,17 +17,21 @@ docker buildx bake
 3. Create TLS Secret
 ```bash
 kubectl create secret tls tls-secret \
-  --cert=pos.crt \
-  --key=pos.key
+  --cert=certs/pos.crt \
+  --key=certs/pos.key
 ```
 
 4. Configure Minikube Ingress Addon
 ```bash
 minikube addons configure ingress
+```
+
+5. Enable Minikube Ingress Addon
+```bash
 minikube addons enable ingress
 ```
 
-5. Install the CloudNativePG Operator
+6. Install the CloudNativePG Operator
 ```bash
 helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm upgrade --install cnpg \
@@ -36,7 +40,12 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
-6. Install the acd-microservice-go Helm Chart
+7. Install the acd-microservice-go Helm Chart
 ```bash
-helm upgrade --install acd-microservice-go .
+helm upgrade --install acd-microservice-go deployment/k8s/charts/acd-microservice-go
+```
+
+8. Start Minikube Tunnel
+```bash
+minikube tunnel
 ```
