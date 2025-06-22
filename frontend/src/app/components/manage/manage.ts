@@ -66,7 +66,7 @@ export class Manage {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: `Erfolgreich für die Prüfung ${exam.name} angemeldet`,
+          detail: `Erfolgreich für die Prüfung ${examExtended.name} angemeldet`,
         });
         return exam;
       });
@@ -84,7 +84,7 @@ export class Manage {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: `Erfolgreich von der Prüfung ${exam.name} abgemeldet`,
+          detail: `Erfolgreich von der Prüfung ${examExtended.name} abgemeldet`,
         });
         return exam;
       });
